@@ -1,0 +1,8 @@
+presubmits:
+  - name: pre-submit-test
+    decorate: true
+    spec:
+      containers:
+        - image: alpine
+          command:
+            - /bin/printenv
