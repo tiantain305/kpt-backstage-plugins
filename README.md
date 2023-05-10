@@ -1,5 +1,11 @@
 # Kpt Backstage Plugins
 
+**NOTICE** This is a fork of the upstream Kpt Backstage Plugin repository. The
+intention is to upstream relevant changes to that repository after kpt moves to
+CNCF and has the CNCF CLA. Please keep changes that are Nephio-specific (i.e.,
+do not belong in the upstream project) easily separable (or do them in a
+different repository).
+
 Welcome! This repository contains the Kpt Backstage Plugins. The plugins can be
 installed into an existing Backstage Application following the READMEs for each
 plugin. For development and testing, the plugins can also be executed with the
