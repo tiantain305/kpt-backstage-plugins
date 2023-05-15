@@ -20,6 +20,7 @@ import { getApplyReplacementsStructuredMetadata } from './FirstClassViewers/Stru
 import { getClusterIssuerStructuredMetadata } from './FirstClassViewers/StructuredMetadata/resources/clusterIssuer';
 import { getConfigMapStructuredMetadata } from './FirstClassViewers/StructuredMetadata/resources/configMap';
 import { getPackageVariantStructuredMetadata } from './FirstClassViewers/StructuredMetadata/resources/packageVariant';
+import { getPackageVariantSetStructuredMetadata } from './FirstClassViewers/StructuredMetadata/resources/packageVariantSet';
 import { getCustomResourceDefinitionStructuredMetadata } from './FirstClassViewers/StructuredMetadata/resources/customResourceDefinition';
 import { getDefaultStructuredMetadata } from './FirstClassViewers/StructuredMetadata/resources/default';
 import { getDeploymentStructuredMetadata } from './FirstClassViewers/StructuredMetadata/resources/deployment';
@@ -99,9 +100,13 @@ const getCustomMetadataFn = (
     case 'v1/ConfigMap':
       return getConfigMapStructuredMetadata;
 
+
     case 'config.porch.kpt.dev/v1alpha1/PackageVariant':
       return getPackageVariantStructuredMetadata;
-      
+
+    case 'config.porch.kpt.dev/v1alpha2/PackageVariantSet':
+      return getPackageVariantSetStructuredMetadata;
+
     case 'v1/PersistentVolumeClaim':
       return getPersistentVolumeClaimStructuredMetadata;
 
