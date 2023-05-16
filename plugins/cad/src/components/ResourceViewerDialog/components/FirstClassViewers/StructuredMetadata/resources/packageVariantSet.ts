@@ -27,8 +27,8 @@ const getValue = (fieldValue: any): string => {
   return fieldValue;
 };
 
-const setSpecdata = (
-  metadata: Metadata,
+const setContextdata = (
+  contextdata: Metadata,
   resourceField: any,
   fieldName: string,
 ): void => {
@@ -40,38 +40,44 @@ const setSpecdata = (
 
       for (const [idx, oneValue] of resourceField.entries()) {
         const arrayFieldName = `${fieldName}${manyInstances ? idx + 1 : ''}`;
-        setSpecdata(metadata, oneValue, arrayFieldName);
+        setContextdata(contextdata, oneValue, arrayFieldName);
       }
     } else {
-      metadata[fieldName] = resourceField.map(getValue).join(', ');
+      contextdata[fieldName] = resourceField.map(getValue).join(', ');
     }
   } else if (typeof resourceField === 'object') {
     const objFields = Object.keys(resourceField);
 
     for (const field of objFields) {
-      const newFieldName = `${fieldName}.${field}`;
-      setSpecdata(metadata, resourceField[field], newFieldName);
+      const newFieldName = `${fieldName}/${field}`;
+      setContextdata(contextdata, resourceField[field], newFieldName);
     }
   } else {
-    metadata[fieldName] = getValue(resourceField);
+    contextdata[fieldName] = getValue(resourceField);
   }
 };
 
 export const getPackageVariantSetStructuredMetadata = (
-  packageVariantSet: PackageVariantSet,
+  resource: KubernetesResource,
 ): Metadata => {
 
-  const newMetadata: Metadata = {};
-  const customMetadata: Metadata = {};
-  const objFields = Object.keys(packageVariantSet.spec);
-  for (const field of objFields) {
-    setSpecdata(newMetadata, packageVariantSet.spec[field], field);
-  }
+  const packageVariantSet = resource as PackageVariantSet;
+  const contextdata: Metadata = {};
+  setContextdata(contextdata, packageVariantSet.spec.targets, "target");
+
+  const customMetadata: Metadata = {
+    upstream: packageVariantSet.spec.upstream
+      ? `${packageVariantSet.spec.upstream.repo}/${packageVariantSet.spec.upstream.package}@${packageVariantSet.spec.upstream?.revision 
+        ? packageVariantSet.spec.upstream?.revision
+        : '0'}`
+      : '',
+      
+  };
   
-  for (const thisKey of Object.keys(newMetadata)) {
-    const isPrefix = thisKey.includes('.');
+  for (const thisKey of Object.keys(contextdata)) {
+    const isPrefix = thisKey.includes('/');
     const thisKeyName = isPrefix
-      ? thisKey.slice(0, thisKey.indexOf('.'))
+      ? thisKey.slice(0, thisKey.indexOf('/'))
       : thisKey;
 
     if (!customMetadata[thisKeyName]) {
@@ -81,8 +87,8 @@ export const getPackageVariantSetStructuredMetadata = (
     const fieldKey = thisKey.slice(thisKeyName.length + 1);
     customMetadata[thisKeyName].push(
       isPrefix
-        ? `${fieldKey}: ${newMetadata[thisKey]}`
-        : newMetadata[thisKey],
+        ? `${fieldKey}: ${contextdata[thisKey]}`
+        : contextdata[thisKey],
     );
   }
   return customMetadata;
