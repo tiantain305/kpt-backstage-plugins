@@ -19,7 +19,7 @@ import { KubernetesResource } from '../../../../../../types/KubernetesResource';
 import { getFunctionNameAndTagFromImage } from '../../../../../../utils/function';
 import { Metadata } from '../StructuredMetadata';
 
-const getKptFunctionDescription = (fn: KptfileFunction): string => {
+export const getKptFunctionDescription = (fn: KptfileFunction): string => {
   const functionNameAndTag = getFunctionNameAndTagFromImage(fn.image);
 
   if (fn.configPath) {

@@ -22,7 +22,7 @@ import { KubernetesKeyValueObject } from './KubernetesResource';
    kind: string;
    apiVersion: string;
    metadata: PackageVariantMetadata;
-   spec: PackageVarientSpec;
+   spec: PackageVariantSpec;
  };
  
  export type PackageVariantMetadata = {
@@ -32,27 +32,22 @@ import { KubernetesKeyValueObject } from './KubernetesResource';
    annotations?: KubernetesKeyValueObject;
  };
  
- export type PackageVarientSpec = {
-  upstream: PackageVariantUpstream;
-  downstream: PackageVariantDownstream;
+ export type PackageVariantSpec = {
+  upstream: PackageVariantStream;
+  downstream: PackageVariantStream;
   labels: KubernetesKeyValueObject;
   annotations?: KubernetesKeyValueObject;
   packageContext: PackageVariantPackageContext;
   adoptionPolicy?: string;
   deletionPolicy?: string;
-  injectors?: PackageVarientInjectors;
+  injectors?: PackageVariantInjectors;
   pipeline?: KptfilePipeline;
  };
 
-  export type PackageVariantUpstream = {
+  export type PackageVariantStream = {
     repo: string;
     package: string;
-    revision: string;
-  };
-
-  export type PackageVariantDownstream = {
-    repo: string;
-    package: string;
+    revision?: string;
   };
 
   export type PackageVariantPackageContext = {
@@ -60,7 +55,7 @@ import { KubernetesKeyValueObject } from './KubernetesResource';
     removeKeys?: string[];
   };
 
-  export type PackageVarientInjectors = {
+  export type PackageVariantInjectors = {
     group: string;
     version: string;
     kind: string;
