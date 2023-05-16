@@ -15,14 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
- import { KubernetesKeyValueObject } from './KubernetesResource';
-import { PackageVariantUpstream } from './PackageVariant';
+import { KubernetesKeyValueObject } from './KubernetesResource';
+import { PackageVariantStream } from './PackageVariant';
 
  export type PackageVariantSet = {
    kind: string;
    apiVersion: string;
    metadata: PackageVariantSetMetadata;
-   spec: PackageVarientSetSpec;
+   spec: PackageVariantSetSpec;
  };
  
  export type PackageVariantSetMetadata = {
@@ -32,22 +32,22 @@ import { PackageVariantUpstream } from './PackageVariant';
    annotations?: KubernetesKeyValueObject;
  };
  
- export type PackageVarientSetSpec = {
-  upstream: PackageVariantUpstream;
-  targets: PackageVariantSetTargets;
+ export type PackageVariantSetSpec = {
+  upstream: PackageVariantStream;
+  targets: PackageVariantSetTargets[];
  };
 
   export type PackageVariantSetTargets = {
-    repositories: PackageVarientSetRepositories[];
-    repositorySelector: PackageVarientSetRepositorieSelector;
+    repositories: PackageVariantSetRepositories[];
+    repositorySelector: PackageVariantSetRepositorySelector;
     objectSelector: string;
   };
 
-  export type PackageVarientSetRepositories = {
+  export type PackageVariantSetRepositories = {
     name: string;
     packageNames?: string[];
   }
 
-  export type PackageVarientSetRepositorieSelector = {
+  export type PackageVariantSetRepositorySelector = {
     matchLabels: KubernetesKeyValueObject;
   }
