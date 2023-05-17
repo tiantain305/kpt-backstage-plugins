@@ -19,6 +19,8 @@ import { getAPIServiceStructuredMetadata } from './FirstClassViewers/StructuredM
 import { getApplyReplacementsStructuredMetadata } from './FirstClassViewers/StructuredMetadata/resources/applyReplacements';
 import { getClusterIssuerStructuredMetadata } from './FirstClassViewers/StructuredMetadata/resources/clusterIssuer';
 import { getConfigMapStructuredMetadata } from './FirstClassViewers/StructuredMetadata/resources/configMap';
+import { getPackageVariantStructuredMetadata } from './FirstClassViewers/StructuredMetadata/resources/packageVariant';
+import { getPackageVariantSetStructuredMetadata } from './FirstClassViewers/StructuredMetadata/resources/packageVariantSet';
 import { getCustomResourceDefinitionStructuredMetadata } from './FirstClassViewers/StructuredMetadata/resources/customResourceDefinition';
 import { getDefaultStructuredMetadata } from './FirstClassViewers/StructuredMetadata/resources/default';
 import { getDeploymentStructuredMetadata } from './FirstClassViewers/StructuredMetadata/resources/deployment';
@@ -68,6 +70,12 @@ const getCustomMetadataFn = (
 
     case 'cert-manager.io/v1/ClusterIssuer':
       return getClusterIssuerStructuredMetadata;
+
+    case 'config.porch.kpt.dev/v1alpha1/PackageVariant':
+      return getPackageVariantStructuredMetadata;
+
+    case 'config.porch.kpt.dev/v1alpha2/PackageVariantSet':
+      return getPackageVariantSetStructuredMetadata;
 
     case 'fn.kpt.dev/v1alpha1/ApplyReplacements':
       return getApplyReplacementsStructuredMetadata;
