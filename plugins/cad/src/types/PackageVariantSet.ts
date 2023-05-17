@@ -14,40 +14,40 @@
  * limitations under the License.
  */
 
- import { KubernetesKeyValueObject } from './KubernetesResource';
- import { PackageVariantUpstream } from './PackageVariant';
- 
- export type PackageVariantSet = {
-   kind: string;
-   apiVersion: string;
-   metadata: PackageVariantSetMetadata;
-   spec: PackageVariantSetSpec;
- };
- 
- export type PackageVariantSetMetadata = {
-   name: string;
-   namespace?: string;
-   labels?: KubernetesKeyValueObject;
-   annotations?: KubernetesKeyValueObject;
- };
- 
- export type PackageVariantSetSpec = {
-   upstream: PackageVariantUpstream;
-   targets: PackageVariantSetTargets[];
- };
- 
- export type PackageVariantSetTargets = {
-   repositories: PackageVariantSetRepositories[];
-   repositorySelector: PackageVariantSetRepositorySelector;
-   objectSelector: string;
- };
- 
- export type PackageVariantSetRepositories = {
-   name: string;
-   packageNames?: string[];
- };
- 
- export type PackageVariantSetRepositorySelector = {
-   matchLabels: KubernetesKeyValueObject;
- };
+import { KubernetesKeyValueObject } from './KubernetesResource';
+import { PackageVariantUpstream } from './PackageVariant';
+
+export type PackageVariantSet = {
+  kind: string;
+  apiVersion: string;
+  metadata: PackageVariantSetMetadata;
+  spec: PackageVariantSetSpec;
+};
+
+export type PackageVariantSetMetadata = {
+  name: string;
+  namespace?: string;
+  labels?: KubernetesKeyValueObject;
+  annotations?: KubernetesKeyValueObject;
+};
+
+export type PackageVariantSetSpec = {
+  upstream: PackageVariantUpstream;
+  targets: PackageVariantSetTargets[];
+};
+
+export type PackageVariantSetTargets = {
+  repositories: PackageVariantSetRepositories[];
+  repositorySelector: PackageVariantSetRepositorySelector;
+  objectSelector: string;
+};
+
+export type PackageVariantSetRepositories = {
+  name: string;
+  packageNames?: string[];
+};
+
+export type PackageVariantSetRepositorySelector = {
+  matchLabels: KubernetesKeyValueObject;
+};
  
