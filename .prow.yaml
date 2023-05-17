@@ -4,23 +4,25 @@ presubmits:
     always_run: true
     spec:
       containers:
-      - image: node:16-alpine3.16
-        command:
-        - "/bin/sh"
-        - "-c"
-        - |
-          yarn install
-          yarn test:all
-          
+        - image: node:16-alpine3.16
+          command:
+            - '/bin/sh'
+            - '-c'
+            - |
+              yarn install --frozen-lockfile
+              yarn test:all
+
   - name: presubmit-kbp-lint
     decorate: true
     always_run: true
     spec:
       containers:
-      - image: node:16-alpine3.16
-        command:
-        - "/bin/sh"
-        - "-c"
-        - |
-          yarn install
-          yarn lint:all
+        - image: node:16-alpine3.16
+          command:
+            - '/bin/sh'
+            - '-c'
+            - |
+              yarn install --frozen-lockfile
+              yarn lint:all
+              yarn tsc:full
+              yarn prettier:check
