@@ -76,7 +76,7 @@ const getCustomMetadataFn = (
 
     case 'config.porch.kpt.dev/v1alpha2/PackageVariantSet':
       return getPackageVariantSetStructuredMetadata;
-  
+
     case 'fn.kpt.dev/v1alpha1/ApplyReplacements':
       return getApplyReplacementsStructuredMetadata;
 
