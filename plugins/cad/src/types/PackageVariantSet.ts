@@ -50,4 +50,3 @@ export type PackageVariantSetRepositories = {
 export type PackageVariantSetRepositorySelector = {
   matchLabels: KubernetesKeyValueObject;
 };
- 
