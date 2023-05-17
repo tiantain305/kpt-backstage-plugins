@@ -70,6 +70,9 @@ const getCustomMetadataFn = (
     case 'cert-manager.io/v1/ClusterIssuer':
       return getClusterIssuerStructuredMetadata;
 
+    case 'config.porch.kpt.dev/v1alpha2/PackageVariantSet':
+      return getPackageVariantSetStructuredMetadata;
+        
     case 'fn.kpt.dev/v1alpha1/ApplyReplacements':
       return getApplyReplacementsStructuredMetadata;
 
@@ -99,9 +102,6 @@ const getCustomMetadataFn = (
     case 'v1/ConfigMap':
       return getConfigMapStructuredMetadata;
 
-    case 'config.porch.kpt.dev/v1alpha2/PackageVariantSet':
-      return getPackageVariantSetStructuredMetadata;
-        
     case 'v1/PersistentVolumeClaim':
       return getPersistentVolumeClaimStructuredMetadata;
 
