@@ -103,6 +103,11 @@ export const PackageRevisionResourcesTable = ({
       namespaceScoped: true,
     },
     {
+      apiVersion: 'config.porch.kpt.dev/v1alpha1',
+      kind: 'PackageVariant',
+      namespaceScoped: true,
+    },
+    {
       apiVersion: 'fn.kpt.dev/v1alpha1',
       kind: 'ApplyReplacements',
       k8LocalConfig: true,
