@@ -60,8 +60,8 @@ export type PackageVariantPackageContext = {
 };
 
 export type PackageVariantInjectors = {
-  group: string;
-  version: string;
-  kind: string;
+  group?: string;
+  version?: string;
+  kind?: string;
   name: string;
 };

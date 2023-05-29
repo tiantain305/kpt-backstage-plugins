@@ -15,19 +15,21 @@
  */
 
 import { TextField } from '@material-ui/core';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { PackageVariantSpec } from '../../../../../../types/PackageVariant';
 import { isMutatorFunction } from '../../../../../../utils/function';
 import { PackageResource } from '../../../../../../utils/packageRevisionResources';
-import { emptyIfUndefined } from '../../../../../../utils/string';
+import { Autocomplete } from '../../../../../Controls';
 import {
   AccordionState,
   EditorAccordion,
 } from '../../Controls/EditorAccordion';
 import { KeyValueEditorAccordion } from '../../Controls/KeyValueEditorAccordion';
+import { DownstreamPackageEditorAccordion } from './container/DownstreamPackageEditorAccordion';
 import { PackageContextEditorAccordion } from './container/PackageContextEditorAccordion';
 import { PipelineEditorAccordion } from './container/PipelineEditorAccordion';
-import { ValueEditorAccordion } from './container/ValueEditorAccordion';
+import { UpstreamPackageEditorAccordion } from './container/UpstreamPackageEditorAccordion';
+import { InjectorEditorAccordion } from './container/InjectorEditorAccordion';
 
 type OnUpdate = (value: PackageVariantSpec) => void;
 
@@ -49,10 +51,36 @@ export const PackageVariantSpecEditor = ({
   const refViewModel = useRef<PackageVariantSpec>(value);
   const viewModel = refViewModel.current;
   const [specExpanded, setSpecExpanded] = useState<string>();
-
+  const [adoptionFunctionNames, setadoptionFunctionNames] = useState<string[]>(
+    [],
+  );
+  const [deletionFunctionNames, setDeletionFunctionNames] = useState<string[]>(
+    [],
+  );
   const valueUpdated = (): void => {
     onUpdate(viewModel);
   };
+  const adoptionFunctionName = useCallback(
+    (adoptionFunctionName: string): void => {
+      viewModel.deletionPolicy = adoptionFunctionName;
+      valueUpdated();
+    },
+    [],
+  );
+  const deletionFunctionName = useCallback(
+    (deletionFunctionName: string): void => {
+      viewModel.deletionPolicy = deletionFunctionName;
+      valueUpdated();
+    },
+    [],
+  );
+
+  useEffect(() => {
+    const allAdoptionFunctionNames = [viewModel.adoptionPolicy];
+    setadoptionFunctionNames(allAdoptionFunctionNames);
+    const allDeletionFunctionNames = [viewModel.deletionPolicy];
+    setDeletionFunctionNames(allDeletionFunctionNames);
+  }, [value]);
   return (
     <EditorAccordion id="spec" title="Spec Data" state={state}>
       <KeyValueEditorAccordion
@@ -77,7 +105,7 @@ export const PackageVariantSpecEditor = ({
           valueUpdated();
         }}
       />
-      <ValueEditorAccordion
+      <UpstreamPackageEditorAccordion
         id="upstream"
         state={[specExpanded, setSpecExpanded]}
         title="Upstream"
@@ -88,7 +116,7 @@ export const PackageVariantSpecEditor = ({
           valueUpdated();
         }}
       />
-      <ValueEditorAccordion
+      <DownstreamPackageEditorAccordion
         id="downstream"
         state={[specExpanded, setSpecExpanded]}
         title="Downstream"
@@ -109,25 +137,17 @@ export const PackageVariantSpecEditor = ({
           valueUpdated();
         }}
       />
-      <TextField
+      <Autocomplete
         label="Adoption Policy"
-        variant="outlined"
-        value={emptyIfUndefined(viewModel.adoptionPolicy)}
-        onChange={e => {
-          viewModel.adoptionPolicy = e.target.value;
-          valueUpdated();
-        }}
-        fullWidth
+        options={adoptionFunctionNames}
+        onInputChange={adoptionFunctionName}
+        value={viewModel.adoptionPolicy}
       />
-      <TextField
+      <Autocomplete
         label="Deletion Policy"
-        variant="outlined"
-        value={emptyIfUndefined(viewModel.deletionPolicy)}
-        onChange={e => {
-          viewModel.deletionPolicy = e.target.value;
-          valueUpdated();
-        }}
-        fullWidth
+        options={deletionFunctionNames}
+        onInputChange={deletionFunctionName}
+        value={viewModel.deletionPolicy}
       />
       <PipelineEditorAccordion
         id="pipeline"
@@ -141,7 +161,7 @@ export const PackageVariantSpecEditor = ({
         pipelineFunction={isMutatorFunction}
         packageResources={packageResources}
       />
-      <ValueEditorAccordion
+      <InjectorEditorAccordion
         id="injectors"
         state={[specExpanded, setSpecExpanded]}
         title="Injectors"

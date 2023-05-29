@@ -15,10 +15,17 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import { cloneDeep } from 'lodash';
+import { KptfilePipeline } from '../../../../../types/Kptfile';
+import { KubernetesKeyValueObject } from '../../../../../types/KubernetesResource';
 import {
   PackageVariant,
   PackageVariantMetadata,
   PackageVariantSpec,
+  PackageVariantUpstream,
+  PackageVariantDownstream,
+  PackageVariantInjectors,
+  PackageVariantPackageContext,
 } from '../../../../../types/PackageVariant';
 import { PackageResource } from '../../../../../utils/packageRevisionResources';
 import { dumpYaml, loadYaml } from '../../../../../utils/yaml';
@@ -35,14 +42,16 @@ type ResourceEditorProps = {
 };
 
 type State = {
-  metadata: PackageVariantMetadata;
   spec: PackageVariantSpec;
 };
 
 const getResourceState = (deployment: PackageVariant): State => {
-  deployment.spec = deployment.spec || {};
-
-  const deploymentSpec = deployment.spec;
+  const deploymentSpec = deployment.spec || {
+    upstream: {},
+    downstream: {},
+    pipeline: {},
+    packageContext: {},
+  };
   deploymentSpec.upstream = deploymentSpec.upstream || {
     repo: '',
     package: '',
@@ -63,14 +72,23 @@ const getResourceState = (deployment: PackageVariant): State => {
     name: '',
   };
   deploymentSpec.packageContext = deploymentSpec.packageContext || { data: {} };
-
   deploymentSpec.pipeline = deploymentSpec.pipeline || {
     mutators: [],
     validators: [],
   };
+  const specData = {
+    upstream: deploymentSpec.upstream,
+    downstream: deploymentSpec.downstream,
+    labels: deploymentSpec.labels,
+    annotations: deploymentSpec.annotations,
+    adoptionPolicy: deploymentSpec.adoptionPolicy,
+    deletionPolicy: deploymentSpec.deletionPolicy,
+    injectors: deploymentSpec.injectors,
+    packageContext: deploymentSpec.packageContext,
+    pipeline: deploymentSpec.pipeline,
+  };
   return {
-    metadata: deployment.metadata,
-    spec: deploymentSpec,
+    spec: specData,
   };
 };
 export const PackageVariantEditor = ({
@@ -82,14 +100,48 @@ export const PackageVariantEditor = ({
 
   const classes = useEditorStyles();
 
-  const [state, setState] = useState<State>(getResourceState(resourceYaml));
+  const [state, setState] = useState<PackageVariant>(resourceYaml);
+  const [specState, setSpecState] = useState<State>(
+    getResourceState(resourceYaml),
+  );
   const [expanded, setExpanded] = useState<string>();
+
   useEffect(() => {
     resourceYaml.metadata = state.metadata;
-    resourceYaml.spec = state.spec;
 
+    const spec = {
+      ...(Object.keys(specState.spec.upstream).length && {
+        upstream: cloneDeep(specState.spec.upstream),
+      }),
+      ...(Object.keys(specState.spec.downstream).length && {
+        downstream: cloneDeep(specState.spec.downstream),
+      }),
+      ...(Object.keys(specState.spec.labels).length && {
+        labels: specState.spec.labels,
+      }),
+      ...(Object.keys(specState.spec.annotations).length && {
+        annotations: specState.spec.annotations,
+      }),
+      ...(specState.spec.adoptionPolicy && {
+        adoptionPolicy: specState.spec.adoptionPolicy,
+      }),
+      ...(specState.spec.deletionPolicy && {
+        deletionPolicy: specState.spec.deletionPolicy,
+      }),
+      ...(specState.spec.injectors.name && {
+        injectors: cloneDeep(specState.spec.injectors),
+      }),
+      ...(Object.keys(specState.spec.packageContext).length && {
+        packageContext: cloneDeep(specState.spec.packageContext),
+      }),
+      ...(Object.keys(specState.spec.pipeline).length && {
+        pipeline: cloneDeep(specState.spec.pipeline),
+      }),
+    };
+
+    resourceYaml.spec = spec;
     onUpdatedYaml(dumpYaml(resourceYaml));
-  }, [state, resourceYaml, onUpdatedYaml]);
+  }, [state, specState, resourceYaml, onUpdatedYaml]);
 
   return (
     <div className={classes.root}>
@@ -102,9 +154,9 @@ export const PackageVariantEditor = ({
       <PackageVariantSpecEditor
         id="spec"
         state={[expanded, setExpanded]}
-        value={state.spec}
+        value={specState.spec}
         packageResources={packageResources}
-        onUpdate={spec => setState(s => ({ ...s, spec }))}
+        onUpdate={spec => setSpecState(s => ({ ...s, spec }))}
       />
     </div>
   );

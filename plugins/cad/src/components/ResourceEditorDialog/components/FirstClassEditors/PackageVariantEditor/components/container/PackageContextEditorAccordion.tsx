@@ -63,10 +63,13 @@ export const PackageContextEditorAccordion = ({
           <TextField
             label="Remove Keys"
             variant="outlined"
-            value={viewModel.removeKeys || ''}
+            value={(viewModel.removeKeys ?? []).join(', ')}
             onChange={e => {
               const value = e.target.value;
-              viewModel.removeKeys = value;
+
+              viewModel.removeKeys = value
+                ? value.split(',').map(v => v.trim())
+                : undefined;
               valueUpdated();
             }}
             fullWidth

@@ -34,38 +34,30 @@ type KeyValueObjectEditorProps = {
 };
 
 type InternalKeyValue = {
-  key: string;
-  value: string;
+  group?: string;
+  version?: string;
+  kind?: string;
+  name: string;
 };
 
-export const ValueEditorAccordion = ({
+export const InjectorEditorAccordion = ({
   id,
   title,
   state,
   keyValueObject,
   onUpdatedKeyValueObject,
 }: KeyValueObjectEditorProps) => {
-  const createKeyValueArray = (): InternalKeyValue[] =>
-    Object.entries(keyValueObject || {}).map(([key, value]) => ({
-      key,
-      value,
-    }));
-
-  const refViewModel = useRef<InternalKeyValue[]>(createKeyValueArray());
-
+  const refViewModel = useRef<InternalKeyValue>(keyValueObject);
+  const viewModel = refViewModel.current;
   const keyValueObjectUpdated = (): void => {
-    const updatedObject = refViewModel.current
-      .filter(keyValue => keyValue.key !== '')
-      .reduce((prev: KubernetesKeyValueObject, keyValue: InternalKeyValue) => {
-        prev[keyValue.key] = keyValue.value;
-        return prev;
-      }, {});
-
-    onUpdatedKeyValueObject(updatedObject);
+    onUpdatedKeyValueObject(viewModel);
   };
 
-  const description = `${refViewModel.current.length} ${toLowerCase(title)}`;
-
+  const description = `${viewModel.group ? `${viewModel.group}/` : ''}${
+    viewModel.version ? `${viewModel.version}/` : ''
+  }${viewModel.kind ? `${viewModel.kind}@` : ''}${
+    viewModel.name ? `${viewModel.name}` : ''
+  }`;
   return (
     <EditorAccordion
       id={id}
@@ -73,21 +65,50 @@ export const ValueEditorAccordion = ({
       title={title}
       description={description}
     >
-      <Fragment>
-        {refViewModel.current.map((keyValuePair, index) => (
-          <TextField
-            key={index}
-            label={keyValuePair.key}
-            variant="outlined"
-            value={keyValuePair.value}
-            onChange={e => {
-              keyValuePair.value = e.target.value;
-              keyValueObjectUpdated();
-            }}
-            fullWidth
-          />
-        ))}
-      </Fragment>
+      <TextField
+        key="group"
+        label="Group"
+        variant="outlined"
+        value={viewModel.group}
+        onChange={e => {
+          viewModel.group = e.target.value;
+          keyValueObjectUpdated();
+        }}
+        fullWidth
+      />
+      <TextField
+        key="version"
+        label="Version"
+        variant="outlined"
+        value={viewModel.version}
+        onChange={e => {
+          viewModel.version = e.target.value;
+          keyValueObjectUpdated();
+        }}
+        fullWidth
+      />
+      <TextField
+        key="kind"
+        label="Kind"
+        variant="outlined"
+        value={viewModel.kind}
+        onChange={e => {
+          viewModel.kind = e.target.value;
+          keyValueObjectUpdated();
+        }}
+        fullWidth
+      />
+      <TextField
+        key="name"
+        label="Name"
+        variant="outlined"
+        value={viewModel.name}
+        onChange={e => {
+          viewModel.name = e.target.value;
+          keyValueObjectUpdated();
+        }}
+        fullWidth
+      />
     </EditorAccordion>
   );
 };

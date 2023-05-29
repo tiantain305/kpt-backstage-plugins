@@ -30,7 +30,6 @@ import {
   isValidatorFunction,
 } from '../../../../../../../utils/function';
 import { PackageResource } from '../../../../../../../utils/packageRevisionResources';
-import { dumpYaml } from '../../../../../../../utils/yaml';
 import { EditorAccordion } from '../../../Controls';
 import { AccordionState } from '../../../Controls/EditorAccordion';
 import { KptFunctionEditorAccordion } from '../../../KptfileEditor/components/KptFunctionEditorAccordion';
@@ -104,7 +103,12 @@ export const PipelineEditorAccordion = ({
   };
   return (
     <Fragment>
-      <EditorAccordion id="mutators" state={pipeLinestate} title="Mutators">
+      <EditorAccordion
+        id="mutators"
+        state={pipeLinestate}
+        title="Mutators"
+        description={`${state.mutators.length} Mutators`}
+      >
         <Fragment>
           {state.mutators.map(
             (mutator, index) =>
@@ -150,7 +154,12 @@ export const PipelineEditorAccordion = ({
         </Fragment>
       </EditorAccordion>
 
-      <EditorAccordion id="validators" state={pipeLinestate} title="Validators">
+      <EditorAccordion
+        id="validators"
+        state={pipeLinestate}
+        title="Validators"
+        description={`${state.validators.length} Validators`}
+      >
         <Fragment>
           {state.validators.map(
             (validator, index) =>
