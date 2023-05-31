@@ -9,6 +9,7 @@ presubmits:
             - '/bin/sh'
             - '-c'
             - |
+              set -euo pipefail
               yarn install --frozen-lockfile
               yarn test:all
 
@@ -22,6 +23,7 @@ presubmits:
             - '/bin/sh'
             - '-c'
             - |
+              set -euo pipefail
               yarn install --frozen-lockfile
               yarn lint:all
               yarn tsc:full
