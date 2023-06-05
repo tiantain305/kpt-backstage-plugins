@@ -19,12 +19,12 @@ import { Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import useAsync from 'react-use/lib/useAsync';
+import { Function } from '../../../../../../../types/Function';
 import { configAsDataApiRef } from '../../../../../../../apis';
 import {
   KptfileFunction,
   KptfilePipeline,
 } from '../../../../../../../types/Kptfile';
-import { KubernetesKeyValueObject } from '../../../../../../../types/KubernetesResource';
 import {
   isMutatorFunction,
   isValidatorFunction,
@@ -42,12 +42,8 @@ import {
   updateList,
 } from '../../../util/deletable';
 
-type OnUpdatedKeyValueObject = (
-  keyValueObject: KubernetesKeyValueObject,
-) => void;
-
 type KptfileEditorProps = {
-  onUpdatedYaml: OnUpdatedKeyValueObject;
+  onUpdatedYaml: OnUpdatedYamlFn;
   pipeLinestate: AccordionState;
   keyValueObject: KptfilePipeline;
   packageResources: PackageResource[];
@@ -57,6 +53,8 @@ type State = {
   mutators: Deletable<KptfileFunction>[];
   validators: Deletable<KptfileFunction>[];
 };
+
+type OnUpdatedYamlFn = (yaml: State) => void;
 
 export const PipelineEditorAccordion = ({
   onUpdatedYaml,
