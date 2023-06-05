@@ -15,7 +15,7 @@
  */
 
 import { SelectItem } from '@backstage/core-components';
-import React, { useRef, useState, useCallback, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   PackageVariantInjectors,
   PackageVariantSpec,
@@ -138,8 +138,8 @@ export const PackageVariantSpecEditor = ({
       />
       <Select
         label="Adoption Policy"
-        onChange={value => {
-          viewModel.adoptionPolicy = value;
+        onChange={adoptionValue => {
+          viewModel.adoptionPolicy = adoptionValue;
           valueUpdated();
         }}
         selected={viewModel.adoptionPolicy || ''}
@@ -147,8 +147,8 @@ export const PackageVariantSpecEditor = ({
       />
       <Select
         label="Deletion Policy"
-        onChange={value => {
-          viewModel.deletionPolicy = value;
+        onChange={deletionValue => {
+          viewModel.deletionPolicy = deletionValue;
           valueUpdated();
         }}
         selected={viewModel.deletionPolicy || ''}
