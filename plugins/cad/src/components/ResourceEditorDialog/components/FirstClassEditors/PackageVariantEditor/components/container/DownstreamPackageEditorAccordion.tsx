@@ -98,7 +98,7 @@ export const DownstreamPackageEditorAccordion = ({
   useEffect(() => {
     viewModel.repo = repository ? repository?.metadata.name : '';
     onUpdatedKeyValueObject(viewModel);
-  }, [repository]);
+  }, [repository, onUpdatedKeyValueObject, viewModel]);
 
   if (loading) {
     return <Progress />;

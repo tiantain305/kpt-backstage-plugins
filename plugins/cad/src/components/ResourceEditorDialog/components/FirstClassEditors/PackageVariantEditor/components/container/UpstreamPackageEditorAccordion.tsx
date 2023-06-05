@@ -134,14 +134,14 @@ export const UpstreamPackageEditorAccordion = ({
   useEffect(() => {
     viewModel.repo = repository ? repository?.metadata.name : '';
     onUpdatedKeyValueObject(viewModel);
-  }, [repository]);
+  }, [repository, onUpdatedKeyValueObject, viewModel]);
 
   useEffect(() => {
     viewModel.package = packageRevision
       ? packageRevision?.spec.packageName
       : '';
     onUpdatedKeyValueObject(viewModel);
-  }, [packageRevision]);
+  }, [packageRevision, onUpdatedKeyValueObject, viewModel]);
 
   if (loading) {
     return <Progress />;
