@@ -70,20 +70,6 @@ export const PackageVariantSpecEditor = ({
   const valueUpdated = (): void => {
     onUpdate(viewModel);
   };
-  const adoptionFunctionName = useCallback(
-    (adoptionFunctionValue: string): void => {
-      viewModel.adoptionPolicy = adoptionFunctionValue;
-      valueUpdated();
-    },
-    [valueUpdated],
-  );
-  const deletionFunctionName = useCallback(
-    (deletionFunctionValue: string): void => {
-      viewModel.deletionPolicy = deletionFunctionValue;
-      valueUpdated();
-    },
-    [valueUpdated],
-  );
 
   useEffect(() => {
     const allAdoptionFunctionNames = [];
@@ -152,13 +138,19 @@ export const PackageVariantSpecEditor = ({
       />
       <Select
         label="Adoption Policy"
-        onChange={adoptionFunctionName}
+        onChange={value => {
+          viewModel.adoptionPolicy = value;
+          valueUpdated();
+        }}
         selected={viewModel.adoptionPolicy || ''}
         items={adoptionFunctionNames}
       />
       <Select
         label="Deletion Policy"
-        onChange={deletionFunctionName}
+        onChange={value => {
+          viewModel.deletionPolicy = value;
+          valueUpdated();
+        }}
         selected={viewModel.deletionPolicy || ''}
         items={deletionFunctionNames}
       />
