@@ -50,6 +50,7 @@ export type KptfilePipeline = {
 export type KptfileFunction = {
   image: string;
   configPath?: string;
+  configMap?: KubernetesKeyValueObject;
 };
 
 export type KptfileUpstream = {
