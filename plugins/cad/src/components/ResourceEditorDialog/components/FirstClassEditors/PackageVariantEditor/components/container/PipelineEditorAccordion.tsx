@@ -88,7 +88,6 @@ export const PipelineEditorAccordion = ({
   }, []);
 
   useEffect(() => {
-    if (!keyValueObject) keyValueObject = {};
     keyValueObject.mutators = undefinedIfEmpty(
       getActiveElements(state.mutators),
     );

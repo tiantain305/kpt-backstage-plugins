@@ -67,18 +67,18 @@
      onUpdate(viewModel);
    };
    const adoptionFunctionName = useCallback(
-     (adoptionFunctionName: string): void => {
-       viewModel.adoptionPolicy = adoptionFunctionName;
+     (adoptionFunctionValue: string): void => {
+       viewModel.adoptionPolicy = adoptionFunctionValue;
        valueUpdated();
      },
-     [],
+     [valueUpdated],
    );
    const deletionFunctionName = useCallback(
-     (deletionFunctionName: string): void => {
-       viewModel.deletionPolicy = deletionFunctionName;
+     (deletionFunctionValue: string): void => {
+       viewModel.deletionPolicy = deletionFunctionValue;
        valueUpdated();
      },
-     [],
+     [valueUpdated],
    );
  
    useEffect(() => {

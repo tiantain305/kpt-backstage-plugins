@@ -259,7 +259,7 @@ export const KptFunctionEditorAccordion = ({
           onChange={value => setConfigPathSelected(value)}
         />
 
-        {state.configMap != undefined && (
+        {state.configMap !== undefined && (
           <KeyValueEditorAccordion
             id="configMap"
             title="Config Map"
@@ -272,7 +272,7 @@ export const KptFunctionEditorAccordion = ({
         )}
 
         <div className={classes.buttonRow}>
-          {state.configMap == undefined && (
+          {state.configMap === undefined && (
             <Button
               variant="outlined"
               startIcon={<AddIcon />}
