@@ -84,7 +84,7 @@ export const PackageContextEditorAccordion = ({
             state={[sectionExpanded, setSectionExpanded]}
             keyValueObject={viewModel.data || {}}
             onUpdatedKeyValueObject={data => {
-              viewModel.data = Object.keys(data).length > 0 ? data : undefined;
+              viewModel.data = data;
               valueUpdated();
             }}
           />
