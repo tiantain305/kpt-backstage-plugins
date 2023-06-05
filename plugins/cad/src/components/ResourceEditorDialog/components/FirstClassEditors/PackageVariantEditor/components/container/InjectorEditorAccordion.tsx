@@ -15,29 +15,19 @@
  */
 
 import { TextField } from '@material-ui/core';
-import React, { Fragment, useRef } from 'react';
-import { KubernetesKeyValueObject } from '../../../../../../../types/KubernetesResource';
-import { toLowerCase } from '../../../../../../../utils/string';
+import React, { useRef } from 'react';
+import { PackageVariantInjectors } from '../../../../../../../types/PackageVariant';
 import { EditorAccordion } from '../../../Controls';
 import { AccordionState } from '../../../Controls/EditorAccordion';
 
-type OnUpdatedKeyValueObject = (
-  keyValueObject: KubernetesKeyValueObject,
-) => void;
+type OnUpdate = (newValue: PackageVariantInjectors) => void;
 
 type KeyValueObjectEditorProps = {
   id: string;
   title: string;
   state: AccordionState;
-  keyValueObject: KubernetesKeyValueObject;
-  onUpdatedKeyValueObject: OnUpdatedKeyValueObject;
-};
-
-type InternalKeyValue = {
-  group?: string;
-  version?: string;
-  kind?: string;
-  name: string;
+  keyValueObject: PackageVariantInjectors;
+  onUpdatedKeyValueObject: OnUpdate;
 };
 
 export const InjectorEditorAccordion = ({
@@ -47,7 +37,7 @@ export const InjectorEditorAccordion = ({
   keyValueObject,
   onUpdatedKeyValueObject,
 }: KeyValueObjectEditorProps) => {
-  const refViewModel = useRef<InternalKeyValue>(keyValueObject);
+  const refViewModel = useRef<PackageVariantInjectors>(keyValueObject);
   const viewModel = refViewModel.current;
   const keyValueObjectUpdated = (): void => {
     onUpdatedKeyValueObject(viewModel);
