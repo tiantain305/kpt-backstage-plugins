@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import { Progress, SelectItem } from '@backstage/core-components';
-import { Alert } from '@material-ui/lab';
+import { SelectItem } from '@backstage/core-components';
 import { TextField } from '@material-ui/core';
-import React, { Fragment, useRef, useState, useEffect } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/lib/useAsync';
 import { configAsDataApiRef } from '../../../../../../../apis';
@@ -108,7 +107,7 @@ export const UpstreamPackageEditorAccordion = ({
     onUpdatedKeyValueObject(viewModel);
   };
 
-  const { loading, error } = useAsync(async (): Promise<void> => {
+  useAsync(async (): Promise<void> => {
     const [{ items: thisAllRepositories }, allPackages] = await Promise.all([
       api.listRepositories(),
       api.listPackageRevisions(),
@@ -131,24 +130,6 @@ export const UpstreamPackageEditorAccordion = ({
     setPackageRevisionSelectItems(allowPackageRevisions);
   }, [api]);
 
-  useEffect(() => {
-    viewModel.repo = repository ? repository?.metadata.name : '';
-    onUpdatedKeyValueObject(viewModel);
-  }, [repository, onUpdatedKeyValueObject, viewModel]);
-
-  useEffect(() => {
-    viewModel.package = packageRevision
-      ? packageRevision?.spec.packageName
-      : '';
-    onUpdatedKeyValueObject(viewModel);
-  }, [packageRevision, onUpdatedKeyValueObject, viewModel]);
-
-  if (loading) {
-    return <Progress />;
-  } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
-  }
-
   const description = `${viewModel.repo ? `${viewModel.repo}/` : ''}${
     viewModel.package ? `${viewModel.package}` : ''
   }${viewModel.revision ? `@${viewModel.revision}` : ''}`;
@@ -163,25 +144,29 @@ export const UpstreamPackageEditorAccordion = ({
       <Fragment>
         <Select
           label="Upstream Repository"
-          onChange={selectedRepositoryName =>
+          onChange={selectedRepositoryName => {
             setRepository(
               repositorySelectItems.find(
                 r => r.value === selectedRepositoryName,
               )?.repository,
-            )
-          }
+            );
+            viewModel.repo = selectedRepositoryName;
+            keyValueObjectUpdated();
+          }}
           selected={emptyIfUndefined(repository?.metadata.name)}
           items={repositorySelectItems}
         />
 
         <Select
           label="Upstream Package"
-          onChange={value =>
-            setPackageRevision(
-              packageRevisionSelectItems.find(r => r.value === value)
-                ?.packageRevision,
-            )
-          }
+          onChange={value => {
+            const selectedPackage = packageRevisionSelectItems.find(
+              r => r.value === value,
+            );
+            setPackageRevision(selectedPackage?.packageRevision);
+            viewModel.package = selectedPackage ? selectedPackage.label : '';
+            keyValueObjectUpdated();
+          }}
           selected={emptyIfUndefined(packageRevision?.metadata.name)}
           items={packageRevisionSelectItems}
         />

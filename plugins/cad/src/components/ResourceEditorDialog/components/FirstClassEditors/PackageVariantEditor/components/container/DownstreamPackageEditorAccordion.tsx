@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import { Progress, SelectItem } from '@backstage/core-components';
-import { Alert } from '@material-ui/lab';
+import { SelectItem } from '@backstage/core-components';
 import { TextField } from '@material-ui/core';
 import { useApi } from '@backstage/core-plugin-api';
-import React, { Fragment, useRef, useState, useEffect } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 import useAsync from 'react-use/lib/useAsync';
 import { Repository } from '../../../../../../../types/Repository';
 import { emptyIfUndefined } from '../../../../../../../utils/string';
@@ -79,11 +78,8 @@ export const DownstreamPackageEditorAccordion = ({
     onUpdatedKeyValueObject(viewModel);
   };
 
-  const { loading, error } = useAsync(async (): Promise<void> => {
-    const [{ items: thisAllRepositories }] = await Promise.all([
-      api.listRepositories(),
-    ]);
-
+  useAsync(async (): Promise<void> => {
+    const { items: thisAllRepositories } = await api.listRepositories();
     const thisRepository = repositoryName
       ? getRepositoryData(thisAllRepositories, repositoryName)
       : undefined;
@@ -94,17 +90,6 @@ export const DownstreamPackageEditorAccordion = ({
     setRepository(thisRepository);
     setRepositorySelectItems(targetRepositoryItems);
   }, [api]);
-
-  useEffect(() => {
-    viewModel.repo = repository ? repository?.metadata.name : '';
-    onUpdatedKeyValueObject(viewModel);
-  }, [repository, onUpdatedKeyValueObject, viewModel]);
-
-  if (loading) {
-    return <Progress />;
-  } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
-  }
 
   const description = `${viewModel.repo ? `${viewModel.repo}/` : ''}${
     viewModel.package ? `${viewModel.package}` : ''
@@ -120,13 +105,15 @@ export const DownstreamPackageEditorAccordion = ({
       <Fragment>
         <Select
           label="Downstream Repository"
-          onChange={selectedRepositoryName =>
+          onChange={selectedRepositoryName => {
             setRepository(
               repositorySelectItems.find(
                 r => r.value === selectedRepositoryName,
               )?.repository,
-            )
-          }
+            );
+            viewModel.repo = selectedRepositoryName;
+            keyValueObjectUpdated();
+          }}
           selected={emptyIfUndefined(repository?.metadata.name)}
           items={repositorySelectItems}
         />
