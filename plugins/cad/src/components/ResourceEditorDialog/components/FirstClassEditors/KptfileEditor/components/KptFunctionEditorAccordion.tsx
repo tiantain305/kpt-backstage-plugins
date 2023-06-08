@@ -17,6 +17,7 @@
 import { SelectItem } from '@backstage/core-components';
 import { Button, TextField } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
 import React, {
   Fragment,
   useCallback,
@@ -38,6 +39,7 @@ import { PackageResource } from '../../../../../../utils/packageRevisionResource
 import { sortByLabel } from '../../../../../../utils/selectItem';
 import { Autocomplete } from '../../../../../Controls/Autocomplete';
 import { Select } from '../../../../../Controls/Select';
+import { KeyValueEditorAccordion } from '../../Controls';
 import {
   AccordionState,
   EditorAccordion,
@@ -104,6 +106,7 @@ export const KptFunctionEditorAccordion = ({
   const [configPathSelected, setConfigPathSelected] = useState<string>(
     kptFunction.configPath || 'none',
   );
+  const [sectionExpanded, setSectionExpanded] = useState<string>();
 
   const classes = useEditorStyles();
   const allKptFunctionsGroupedByName = useMemo(
@@ -204,6 +207,10 @@ export const KptFunctionEditorAccordion = ({
     ? getFunctionNameAndTagFromImage(state.image)
     : 'none';
 
+  const onAddConfig = (): void => {
+    setState(s => ({ ...s, configMap: {} }));
+  };
+
   return (
     <EditorAccordion
       id={id}
@@ -252,13 +259,36 @@ export const KptFunctionEditorAccordion = ({
           onChange={value => setConfigPathSelected(value)}
         />
 
-        <Button
-          variant="outlined"
-          startIcon={<DeleteIcon />}
-          onClick={() => onUpdate(undefined)}
-        >
-          Delete
-        </Button>
+        {state.configMap !== undefined && (
+          <KeyValueEditorAccordion
+            id="configMap"
+            title="Config Map"
+            state={[sectionExpanded, setSectionExpanded]}
+            keyValueObject={state.configMap || {}}
+            onUpdatedKeyValueObject={configMap =>
+              setState(s => ({ ...s, configMap }))
+            }
+          />
+        )}
+
+        <div className={classes.buttonRow}>
+          {state.configMap === undefined && (
+            <Button
+              variant="outlined"
+              startIcon={<AddIcon />}
+              onClick={() => onAddConfig()}
+            >
+              Add Config
+            </Button>
+          )}
+          <Button
+            variant="outlined"
+            startIcon={<DeleteIcon />}
+            onClick={() => onUpdate(undefined)}
+          >
+            Delete
+          </Button>
+        </div>
       </Fragment>
     </EditorAccordion>
   );

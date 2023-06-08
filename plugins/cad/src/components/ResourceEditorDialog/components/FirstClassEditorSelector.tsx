@@ -18,6 +18,7 @@ import React, { useEffect, useRef } from 'react';
 import { PackageResource } from '../../../utils/packageRevisionResources';
 import { ApplyReplacementsEditor } from './FirstClassEditors/ApplyReplacementsEditor';
 import { ConfigMapEditor } from './FirstClassEditors/ConfigMapEditor';
+import { PackageVariantEditor } from './FirstClassEditors/PackageVariantEditor';
 import {
   DeploymentEditor,
   StatefulSetEditor,
@@ -71,6 +72,15 @@ export const FirstClassEditorSelector = ({
     case 'apps/v1/StatefulSet':
       return (
         <StatefulSetEditor
+          yaml={yaml}
+          onUpdatedYaml={onUpdatedYaml}
+          packageResources={packageResources}
+        />
+      );
+
+    case 'config.porch.kpt.dev/v1alpha1/PackageVariant':
+      return (
+        <PackageVariantEditor
           yaml={yaml}
           onUpdatedYaml={onUpdatedYaml}
           packageResources={packageResources}
