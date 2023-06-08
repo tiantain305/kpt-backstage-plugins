@@ -128,9 +128,9 @@ export const UpstreamPackageEditorAccordion = ({
   useEffect(() => {
     if (repository) {
       const repositoryPackages = allPackageRevisions.current.filter(
-        packageRevision =>
-          packageRevision.spec.repository === repository.metadata.name &&
-          packageRevision.spec.revision === 'main',
+        allPackageRevision =>
+          allPackageRevision.spec.repository === repository.metadata.name &&
+          allPackageRevision.spec.revision === 'main',
       );
 
       const allowPackageRevisions = sortByLabel<PackageRevisionSelectItem>(
