@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { SelectItem } from '@backstage/core-components';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   PackageVariantInjectors,
   PackageVariantSpec,
@@ -42,6 +41,15 @@ type PackageVariantSpecEditorProps = {
   packageResources: PackageResource[];
 };
 
+const deletionFunctionList = [
+  { label: 'Delete', value: 'delete' },
+  { label: 'Orphan', value: 'orphan' },
+];
+const adoptFunctionList = [
+  { label: 'AdoptExisting', value: 'adoptExisting' },
+  { label: 'AdoptNone', value: 'adoptNone' },
+];
+
 export const PackageVariantSpecEditor = ({
   state,
   value,
@@ -58,12 +66,6 @@ export const PackageVariantSpecEditor = ({
   const refViewModel = useRef<PackageVariantSpec>(value);
   const viewModel = refViewModel.current;
   const [specExpanded, setSpecExpanded] = useState<string>();
-  const [adoptionFunctionNames, setadoptionFunctionNames] = useState<
-    SelectItem[]
-  >([]);
-  const [deletionFunctionNames, setDeletionFunctionNames] = useState<
-    SelectItem[]
-  >([]);
   const [injectorEditor, setInjectorEditor] = useState<PackageVariantInjectors>(
     createInjectorsState(viewModel.injectors),
   );
@@ -71,19 +73,6 @@ export const PackageVariantSpecEditor = ({
     onUpdate(viewModel);
   };
 
-  useEffect(() => {
-    const allAdoptionFunctionNames = [];
-    allAdoptionFunctionNames.push({
-      label: 'adoptExisting',
-      value: 'adoptExisting',
-    });
-    allAdoptionFunctionNames.push({ label: 'adoptNone', value: 'adoptNone' });
-    setadoptionFunctionNames(allAdoptionFunctionNames);
-    const allDeletionFunctionNames = [];
-    allDeletionFunctionNames.push({ label: 'delete', value: 'delete' });
-    allDeletionFunctionNames.push({ label: 'orphan', value: 'orphan' });
-    setDeletionFunctionNames(allDeletionFunctionNames);
-  }, [value]);
   return (
     <EditorAccordion id="spec" title="Spec Data" state={state}>
       <KeyValueEditorAccordion
@@ -92,7 +81,7 @@ export const PackageVariantSpecEditor = ({
         title="Labels"
         keyValueObject={viewModel.labels || {}}
         onUpdatedKeyValueObject={labels => {
-          viewModel.labels = Object.keys(labels).length > 0 ? labels : {};
+          viewModel.labels = labels;
           valueUpdated();
         }}
       />
@@ -102,8 +91,7 @@ export const PackageVariantSpecEditor = ({
         title="Annotations"
         keyValueObject={viewModel.annotations || {}}
         onUpdatedKeyValueObject={annotations => {
-          viewModel.annotations =
-            Object.keys(annotations).length > 0 ? annotations : {};
+          viewModel.annotations = annotations;
           valueUpdated();
         }}
       />
@@ -143,7 +131,7 @@ export const PackageVariantSpecEditor = ({
           valueUpdated();
         }}
         selected={viewModel.adoptionPolicy || ''}
-        items={adoptionFunctionNames}
+        items={adoptFunctionList}
       />
       <Select
         label="Deletion Policy"
@@ -152,7 +140,7 @@ export const PackageVariantSpecEditor = ({
           valueUpdated();
         }}
         selected={viewModel.deletionPolicy || ''}
-        items={deletionFunctionNames}
+        items={deletionFunctionList}
       />
       <PipelineEditorAccordion
         pipeLinestate={[specExpanded, setSpecExpanded]}

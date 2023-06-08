@@ -16,7 +16,7 @@
 
 import { SelectItem } from '@backstage/core-components';
 import { TextField } from '@material-ui/core';
-import React, { Fragment, useRef, useState } from 'react';
+import React, { Fragment, useRef, useState, useEffect } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/lib/useAsync';
 import { configAsDataApiRef } from '../../../../../../../apis';
@@ -27,6 +27,7 @@ import { Select } from '../../../../../../Controls';
 import { EditorAccordion } from '../../../Controls';
 import { AccordionState } from '../../../Controls/EditorAccordion';
 import { PackageRevision } from '../../../../../../../types/PackageRevision';
+import { sortByLabel } from '../../../../../../../utils/selectItem';
 
 type UpstreamPackageObjectEditorProps = {
   id: string;
@@ -92,7 +93,6 @@ export const UpstreamPackageEditorAccordion = ({
   const refViewModel = useRef<InternalKeyValue>(keyValueObject);
   const viewModel = refViewModel.current;
   const repositoryName = viewModel.repo;
-  const packageName = viewModel.package;
 
   const [repository, setRepository] = useState<Repository>();
   const [packageRevision, setPackageRevision] = useState<PackageRevision>();
@@ -102,6 +102,7 @@ export const UpstreamPackageEditorAccordion = ({
   const [packageRevisionSelectItems, setPackageRevisionSelectItems] = useState<
     PackageRevisionSelectItem[]
   >([]);
+  const allPackageRevisions = useRef<PackageRevision[]>([]);
 
   const keyValueObjectUpdated = (): void => {
     onUpdatedKeyValueObject(viewModel);
@@ -112,23 +113,34 @@ export const UpstreamPackageEditorAccordion = ({
       api.listRepositories(),
       api.listPackageRevisions(),
     ]);
-
+    allPackageRevisions.current = allPackages;
     const thisRepository = repositoryName
       ? getRepositoryData(thisAllRepositories, repositoryName)
       : undefined;
 
-    const thisPackageRevision = getPackageData(allPackages, packageName);
     const targetRepositoryItems = thisAllRepositories.map(
       mapRepositoryToSelectItem,
     );
-    const allowPackageRevisions = allPackages.map(
-      mapPackageRevisionToSelectItem,
-    );
     setRepository(thisRepository);
     setRepositorySelectItems(targetRepositoryItems);
-    setPackageRevision(thisPackageRevision);
-    setPackageRevisionSelectItems(allowPackageRevisions);
   }, [api]);
+
+  useEffect(() => {
+    if (repository) {
+      const repositoryPackages = allPackageRevisions.current.filter(
+        packageRevision =>
+          packageRevision.spec.repository === repository.metadata.name &&
+          packageRevision.spec.revision === 'main',
+      );
+
+      const allowPackageRevisions = sortByLabel<PackageRevisionSelectItem>(
+        repositoryPackages.map(mapPackageRevisionToSelectItem),
+      );
+
+      setPackageRevision(undefined);
+      setPackageRevisionSelectItems(allowPackageRevisions);
+    }
+  }, [repository]);
 
   const description = `${viewModel.repo ? `${viewModel.repo}/` : ''}${
     viewModel.package ? `${viewModel.package}` : ''

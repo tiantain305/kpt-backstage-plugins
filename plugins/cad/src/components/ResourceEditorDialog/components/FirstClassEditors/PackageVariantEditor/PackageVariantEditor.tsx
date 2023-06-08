@@ -38,32 +38,34 @@ type State = {
   spec: PackageVariantSpec;
 };
 
-const getResourceState = (deployment: PackageVariant): State => {
-  deployment.spec = deployment.spec || { adoptionPolicy: '' };
-  const deploymentSpec = deployment.spec;
+const getResourceState = (packageVariant: PackageVariant): State => {
+  packageVariant.spec = packageVariant.spec || { adoptionPolicy: '' };
+  const packageVariantSpec = packageVariant.spec;
 
-  deploymentSpec.upstream = deploymentSpec.upstream || {};
-  deploymentSpec.downstream = deploymentSpec.downstream || {};
-  deploymentSpec.labels = deploymentSpec.labels || {};
-  deploymentSpec.annotations = deploymentSpec.annotations || {};
-  deploymentSpec.adoptionPolicy = deploymentSpec.adoptionPolicy || '';
-  deploymentSpec.deletionPolicy = deploymentSpec.deletionPolicy || '';
-  deploymentSpec.injectors = deploymentSpec.injectors || { name: '' };
-  deploymentSpec.packageContext = deploymentSpec.packageContext || { data: {} };
-  deploymentSpec.pipeline = deploymentSpec.pipeline || {
+  packageVariantSpec.upstream = packageVariantSpec.upstream || {};
+  packageVariantSpec.downstream = packageVariantSpec.downstream || {};
+  packageVariantSpec.labels = packageVariantSpec.labels || undefined;
+  packageVariantSpec.annotations = packageVariantSpec.annotations || undefined;
+  packageVariantSpec.adoptionPolicy = packageVariantSpec.adoptionPolicy || '';
+  packageVariantSpec.deletionPolicy = packageVariantSpec.deletionPolicy || '';
+  packageVariantSpec.injectors = packageVariantSpec.injectors || { name: '' };
+  packageVariantSpec.packageContext = packageVariantSpec.packageContext || {
+    data: {},
+  };
+  packageVariantSpec.pipeline = packageVariantSpec.pipeline || {
     mutators: [],
     validators: [],
   };
   const specData = {
-    upstream: deploymentSpec.upstream,
-    downstream: deploymentSpec.downstream,
-    labels: deploymentSpec.labels,
-    annotations: deploymentSpec.annotations,
-    adoptionPolicy: deploymentSpec.adoptionPolicy,
-    deletionPolicy: deploymentSpec.deletionPolicy,
-    injectors: deploymentSpec.injectors,
-    packageContext: deploymentSpec.packageContext,
-    pipeline: deploymentSpec.pipeline,
+    upstream: packageVariantSpec.upstream,
+    downstream: packageVariantSpec.downstream,
+    labels: packageVariantSpec.labels,
+    annotations: packageVariantSpec.annotations,
+    adoptionPolicy: packageVariantSpec.adoptionPolicy,
+    deletionPolicy: packageVariantSpec.deletionPolicy,
+    injectors: packageVariantSpec.injectors,
+    packageContext: packageVariantSpec.packageContext,
+    pipeline: packageVariantSpec.pipeline,
   };
   return {
     spec: specData,
