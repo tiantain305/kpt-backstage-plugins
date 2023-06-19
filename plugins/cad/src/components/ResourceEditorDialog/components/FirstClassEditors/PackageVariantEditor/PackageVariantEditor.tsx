@@ -111,6 +111,8 @@ export const PackageVariantEditor = ({
         onUpdate={metadata => setState(s => ({ ...s, metadata }))}
       />
       <PackageVariantSpecEditor
+        id="spec"
+        title="Spec Data"
         state={[expanded, setExpanded]}
         value={specState.spec}
         packageResources={packageResources}

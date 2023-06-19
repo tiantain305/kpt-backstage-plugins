@@ -35,6 +35,8 @@ import { InjectorEditorAccordion } from './container/InjectorEditorAccordion';
 type OnUpdate = (value: PackageVariantSpec) => void;
 
 type PackageVariantSpecEditorProps = {
+  id: string;
+  title: string;
   state: AccordionState;
   value: PackageVariantSpec;
   onUpdate: OnUpdate;
@@ -51,6 +53,8 @@ const adoptFunctionList = [
 ];
 
 export const PackageVariantSpecEditor = ({
+  id,
+  title,
   state,
   value,
   onUpdate,
@@ -74,7 +78,7 @@ export const PackageVariantSpecEditor = ({
   };
 
   return (
-    <EditorAccordion id="spec" title="Spec Data" state={state}>
+    <EditorAccordion id={id} title={title} state={state}>
       <KeyValueEditorAccordion
         id="labels"
         state={[specExpanded, setSpecExpanded]}
