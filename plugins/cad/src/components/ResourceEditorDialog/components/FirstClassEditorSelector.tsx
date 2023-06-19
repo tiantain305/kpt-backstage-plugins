@@ -32,6 +32,7 @@ import { RoleEditor } from './FirstClassEditors/RoleEditor';
 import { ServiceAccountEditor } from './FirstClassEditors/ServiceAccountEditor';
 import { ServiceEditor } from './FirstClassEditors/ServiceEditor';
 import { SetLabelsEditor } from './FirstClassEditors/SetLabelsEditor';
+import { PackageVariantSetEditor } from './FirstClassEditors/PackageVariantSetEditor';
 
 type OnUpdatedYamlFn = (yaml: string) => void;
 type OnNoNamedEditorFn = () => void;
@@ -81,6 +82,16 @@ export const FirstClassEditorSelector = ({
     case 'config.porch.kpt.dev/v1alpha1/PackageVariant':
       return (
         <PackageVariantEditor
+          yaml={yaml}
+          onUpdatedYaml={onUpdatedYaml}
+          packageResources={packageResources}
+        />
+      );
+
+    case 'config.porch.kpt.dev/v1alpha2/PackageVariantSet':
+    case 'config.porch.kpt.dev/v1alpha1/PackageVariantSet':
+      return (
+        <PackageVariantSetEditor
           yaml={yaml}
           onUpdatedYaml={onUpdatedYaml}
           packageResources={packageResources}
