@@ -23,7 +23,6 @@ import {
   AccordionState,
   EditorAccordion,
 } from '../../../../../Controls/EditorAccordion';
-import { IconButton } from '../../../../../../../../Controls';
 import { useEditorStyles } from '../../../../../styles';
 import { ConfigMapExpr } from '../../../../../../../../../types/PackageVariantSet';
 
@@ -78,8 +77,8 @@ export const ExprEditorAccordion = ({
         <EditorAccordion
           id={`${index}`}
           state={[exprExpanded, setExprExpanded]}
-          title={'title'}
-          description={'description'}
+          title={`Expr-${index}`}
+          description={description}
         >
           <TextField
             label="Key"
@@ -121,18 +120,20 @@ export const ExprEditorAccordion = ({
             }}
             fullWidth
           />
-          <IconButton
-            title="Delete"
-            className={classes.iconButton}
-            onClick={() => {
-              refViewModel.current = refViewModel.current.filter(
-                thisKeyValueObject => thisKeyValueObject !== keyValuePair,
-              );
-              keyValueObjectUpdated();
-            }}
-          >
-            <DeleteIcon /> Delete
-          </IconButton>
+          <div className={classes.multiControlRow}>
+            <Button
+              variant="outlined"
+              startIcon={<DeleteIcon />}
+              onClick={() => {
+                refViewModel.current = refViewModel.current.filter(
+                  thisKeyValueObject => thisKeyValueObject !== keyValuePair,
+                );
+                keyValueObjectUpdated();
+              }}
+            >
+              Delete Expr
+            </Button>
+          </div>
         </EditorAccordion>
       ))}
       <Button variant="outlined" startIcon={<AddIcon />} onClick={addRow}>

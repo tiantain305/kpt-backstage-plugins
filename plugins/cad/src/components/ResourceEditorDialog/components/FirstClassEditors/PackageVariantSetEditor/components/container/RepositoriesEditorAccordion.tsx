@@ -66,27 +66,27 @@ export const RepositoriesEditorAccordion = ({
 
   return (
     <EditorAccordion
-      id={'Repositories-' + id}
+      id={`Repositories-${id}`}
       title={title}
-      description={'Repositories-' + id}
+      description={`Repositories-${id}`}
       state={accordionState}
     >
       {state.repositories &&
         state.repositories.map(
-          (target: PackageVariantSetRepositories, index: number) => (
+          (repository: PackageVariantSetRepositories, index: number) => (
             <EditorAccordion
               id={`Repositories-${index}`}
-              title={'Repositories-' + index}
-              description={target.name}
+              title={`Repositories-${index}`}
+              description={repository.name}
               state={[expanded, setExpanded]}
             >
               <div className={classes.multiControlRow}>
                 <TextField
                   label="Name"
                   variant="outlined"
-                  value={target.name}
+                  value={repository.name}
                   onChange={e => {
-                    target.name = e.target.value;
+                    repository.name = e.target.value;
                     valueUpdated();
                   }}
                   fullWidth
@@ -94,10 +94,10 @@ export const RepositoriesEditorAccordion = ({
                 <TextField
                   label="Package Names"
                   variant="outlined"
-                  value={(target.packageNames ?? []).join(', ')}
+                  value={(repository.packageNames ?? []).join(', ')}
                   onChange={e => {
                     const value = e.target.value;
-                    target.packageNames = value
+                    repository.packageNames = value
                       ? value.split(',').map(v => v.trim())
                       : undefined;
                     valueUpdated();
@@ -111,7 +111,7 @@ export const RepositoriesEditorAccordion = ({
                   startIcon={<DeleteIcon />}
                   onClick={() => {
                     state.repositories = state!.repositories!.filter(
-                      repositories => repositories !== target,
+                      repositories => repositories !== repository,
                     );
                     valueUpdated();
                   }}

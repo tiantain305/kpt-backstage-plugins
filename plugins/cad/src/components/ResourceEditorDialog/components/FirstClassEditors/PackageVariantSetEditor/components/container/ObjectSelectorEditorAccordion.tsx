@@ -67,9 +67,9 @@ export const ObjectSelectorEditorAccordion = ({
 
   return (
     <EditorAccordion
-      id={'objectSelector-' + id}
+      id={`objectSelector-${id}`}
       title={title}
-      description={'ObjectSelector-' + id}
+      description={`ObjectSelector-${id}`}
       state={accordionState}
     >
       <TextField

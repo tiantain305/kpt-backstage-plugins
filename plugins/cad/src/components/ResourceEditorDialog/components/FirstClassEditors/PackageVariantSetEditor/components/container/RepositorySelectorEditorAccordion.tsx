@@ -65,9 +65,9 @@ export const RepositorySelectorEditorAccordion = ({
 
   return (
     <EditorAccordion
-      id={'repositorySelector-' + id}
+      id={`repositorySelector-${id}`}
       title={title}
-      description={'Repository Selector-' + id}
+      description={`Repository Selector-${id}`}
       state={accordionState}
     >
       <KeyValueEditorAccordion

@@ -71,10 +71,9 @@ export const PackageContextEditorAccordion = ({
             variant="outlined"
             value={(viewModel.removeKeys ?? []).join(', ')}
             onChange={e => {
-              const value = e.target.value;
-
-              viewModel.removeKeys = value
-                ? value.split(',').map(v => v.trim())
+              const removeKey = e.target.value;
+              viewModel.removeKeys = removeKey
+                ? removeKey.split(',').map(v => v.trim())
                 : undefined;
               valueUpdated();
             }}
@@ -110,10 +109,9 @@ export const PackageContextEditorAccordion = ({
             variant="outlined"
             value={(viewModel.removeKeyExprs ?? []).join(', ')}
             onChange={e => {
-              const value = e.target.value;
-
-              viewModel.removeKeyExprs = value
-                ? value.split(',').map(v => v.trim())
+              const removeKeyExpr = e.target.value;
+              viewModel.removeKeyExprs = removeKeyExpr
+                ? removeKeyExpr.split(',').map(v => v.trim())
                 : undefined;
               valueUpdated();
             }}

@@ -60,13 +60,13 @@ export const TargetEditorAccordion = ({
     onUpdate(stateData);
   };
   return (
-    <EditorAccordion id={id} state={targetState} title={title} description={''}>
+    <EditorAccordion id={id} state={targetState} title={title} description="">
       {viewModel.map((target: any, index: number) => {
-        if (target['repositories'] != undefined && isActiveElement(target))
+        if (target.repositories !== undefined && isActiveElement(target))
           return (
             <RepositoriesEditorAccordion
               id={index}
-              title={'Repositories'}
+              title="Repositories"
               targetState={[expanded, setExpanded]}
               target={target}
               packageResources={packageResources}
@@ -76,14 +76,11 @@ export const TargetEditorAccordion = ({
               }}
             />
           );
-        if (
-          target['repositorySelector'] != undefined &&
-          isActiveElement(target)
-        )
+        if (target.repositorySelector !== undefined && isActiveElement(target))
           return (
             <RepositorySelectorEditorAccordion
               id={index}
-              title={'Repository Selector'}
+              title="Repository Selector"
               targetState={[expanded, setExpanded]}
               target={target}
               packageResources={packageResources}
@@ -93,11 +90,11 @@ export const TargetEditorAccordion = ({
               }}
             />
           );
-        if (target['objectSelector'] != undefined && isActiveElement(target))
+        if (target.objectSelector !== undefined && isActiveElement(target))
           return (
             <ObjectSelectorEditorAccordion
               id={index}
-              title={'Object Selector'}
+              title="Object Selector"
               targetState={[expanded, setExpanded]}
               target={target}
               packageResources={packageResources}
@@ -107,7 +104,7 @@ export const TargetEditorAccordion = ({
               }}
             />
           );
-        else return null;
+        return null;
       })}
       <div className={classes.buttonRow}>
         <Button
