@@ -10,6 +10,8 @@ presubmits:
             - '-c'
             - |
               set -euo pipefail
+              apk update
+              apk add python3 make g++
               yarn install --frozen-lockfile
               yarn test:all
 
@@ -24,6 +26,8 @@ presubmits:
             - '-c'
             - |
               set -euo pipefail
+              apk update
+              apk add python3 make g++
               yarn install --frozen-lockfile
               yarn lint:all
               yarn tsc:full
