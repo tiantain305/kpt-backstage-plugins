@@ -21,18 +21,18 @@ import { Button } from '@material-ui/core';
 import {
   AccordionState,
   EditorAccordion,
-} from '../../../Controls/EditorAccordion';
+} from '../../Controls/EditorAccordion';
 import {
   PackageVariantSetRepositorySelector,
   PackageVariantSetTempleate,
-} from '../../../../../../../types/PackageVariantSet';
-import { KeyValueEditorAccordion } from '../../../Controls';
-import { PackageResource } from '../../../../../../../utils/packageRevisionResources';
+} from '../../../../../../types/PackageVariantSet';
+import { KeyValueEditorAccordion } from '../../Controls';
+import { PackageResource } from '../../../../../../utils/packageRevisionResources';
 import { TemplateEditorAccordion } from './templates/TemplateEditorAccordion';
-import { useEditorStyles } from '../../../styles';
+import { useEditorStyles } from '../../styles';
 
 type RepositoriesState = {
-  repositorySelector?: PackageVariantSetRepositorySelector;
+  repositorySelector: PackageVariantSetRepositorySelector;
   template?: PackageVariantSetTempleate;
 };
 type OnUpdate = (newValue?: RepositoriesState) => void;
@@ -74,17 +74,9 @@ export const RepositorySelectorEditorAccordion = ({
         id="matchLabels"
         state={[expanded, setExpanded]}
         title="Match Labels"
-        keyValueObject={
-          state.repositorySelector?.matchLabels || { matchLabels: '' }
-        }
+        keyValueObject={state.repositorySelector.matchLabels || {}}
         onUpdatedKeyValueObject={matchLabels => {
-          setState(s => ({
-            ...s,
-            repositorySelector: {
-              ...s.repositorySelector,
-              matchLabels: matchLabels,
-            },
-          }));
+          viewModel.repositorySelector.matchLabels = matchLabels;
           valueUpdated();
         }}
       />
