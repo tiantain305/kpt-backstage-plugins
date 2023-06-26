@@ -17,17 +17,17 @@
 import { TextField } from '@material-ui/core';
 import { clone } from 'lodash';
 import React, { Fragment, useRef, useState } from 'react';
-import { KubernetesKeyValueObject } from '../../../../../../../../../types/KubernetesResource';
+import { KubernetesKeyValueObject } from '../../../../../../../types/KubernetesResource';
 import {
   ConfigMapExpr,
   PackageVariantSetPackageContext,
-} from '../../../../../../../../../types/PackageVariantSet';
-import { KeyValueEditorAccordion } from '../../../../../Controls';
+} from '../../../../../../../types/PackageVariantSet';
+import { KeyValueEditorAccordion } from '../../../Controls';
 import {
   AccordionState,
   EditorAccordion,
-} from '../../../../../Controls/EditorAccordion';
-import { useEditorStyles } from '../../../../../styles';
+} from '../../../Controls/EditorAccordion';
+import { useEditorStyles } from '../../../styles';
 import { ExprEditorAccordion } from './ExprEditorAccordion';
 
 type PackageContextState = {
