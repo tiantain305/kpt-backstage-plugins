@@ -16,25 +16,33 @@
 
 import React, { useRef, useState } from 'react';
 import { clone } from 'lodash';
+import { useApi } from '@backstage/core-plugin-api';
+import { SelectItem } from '@backstage/core-components';
+import useAsync from 'react-use/lib/useAsync';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { TextField, Button } from '@material-ui/core';
 import {
   AccordionState,
   EditorAccordion,
-} from '../../../Controls/EditorAccordion';
-import { useEditorStyles } from '../../../styles';
+} from '../../Controls/EditorAccordion';
+import { useEditorStyles } from '../../styles';
 import {
   PackageVariantSetRepositories,
   PackageVariantSetTempleate,
-} from '../../../../../../../types/PackageVariantSet';
-import { PackageResource } from '../../../../../../../utils/packageRevisionResources';
+} from '../../../../../../types/PackageVariantSet';
+import { PackageResource } from '../../../../../../utils/packageRevisionResources';
 import { TemplateEditorAccordion } from './templates/TemplateEditorAccordion';
+import { configAsDataApiRef } from '../../../../../../apis';
+import { Select } from '../../../../../Controls';
+import { Repository } from '../../../../../../types/Repository';
+import { getRepositoryData } from './templates/DownstreamPackageEditorAccordion';
 
 type RepositoriesState = {
   repositories?: PackageVariantSetRepositories[];
   template?: PackageVariantSetTempleate;
 };
+
 type OnUpdate = (newValue?: RepositoriesState) => void;
 
 type repositoriesEditorProps = {
@@ -46,6 +54,18 @@ type repositoriesEditorProps = {
   onUpdate: OnUpdate;
 };
 
+const mapRepositoryToSelectItem = (
+  repository: Repository,
+): RepositorySelectItem => ({
+  label: repository.metadata.name,
+  value: repository.metadata.name,
+  repository: repository,
+});
+
+type RepositorySelectItem = SelectItem & {
+  repository?: Repository;
+};
+
 export const RepositoriesEditorAccordion = ({
   id,
   title,
@@ -54,14 +74,36 @@ export const RepositoriesEditorAccordion = ({
   packageResources,
   onUpdate,
 }: repositoriesEditorProps) => {
+  const api = useApi(configAsDataApiRef);
   const classes = useEditorStyles();
   const refViewModel = useRef<RepositoriesState>(clone(target));
   const viewModel = refViewModel.current;
 
   const [expanded, setExpanded] = useState<string>();
   const [state, setState] = useState<RepositoriesState>(viewModel);
+  const [repositorySelectItems, setRepositorySelectItems] = useState<
+    Repository[]
+  >([]);
+
+  useAsync(async (): Promise<void> => {
+    const [{ items: thisAllRepositories }] = await Promise.all([
+      api.listRepositories(),
+    ]);
+    setRepositorySelectItems(thisAllRepositories);
+  }, [api]);
+
   const valueUpdated = (): void => {
     onUpdate(viewModel);
+  };
+
+  const setRepositoryName = (name: string): string => {
+    if (repositorySelectItems.length !== 0) {
+      const thisRepository = name
+        ? getRepositoryData(repositorySelectItems, name)
+        : undefined;
+      return thisRepository?.metadata?.name || '';
+    }
+    return 'thisRepository?.metadata?.name';
   };
 
   return (
@@ -81,15 +123,14 @@ export const RepositoriesEditorAccordion = ({
               state={[expanded, setExpanded]}
             >
               <div className={classes.multiControlRow}>
-                <TextField
+                <Select
                   label="Name"
-                  variant="outlined"
-                  value={repository.name}
-                  onChange={e => {
-                    repository.name = e.target.value;
+                  onChange={selectedRepositoryName => {
+                    repository.name = selectedRepositoryName;
                     valueUpdated();
                   }}
-                  fullWidth
+                  selected={setRepositoryName(repository?.name)}
+                  items={repositorySelectItems.map(mapRepositoryToSelectItem)}
                 />
                 <TextField
                   label="Package Names"
