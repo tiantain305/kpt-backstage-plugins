@@ -18,13 +18,13 @@ import { Button, TextField } from '@material-ui/core';
 import React, { useState, useRef } from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
-import { toLowerCase } from '../../../../../../../../../utils/string';
+import { toLowerCase } from '../../../../../../../utils/string';
 import {
   AccordionState,
   EditorAccordion,
-} from '../../../../../Controls/EditorAccordion';
-import { useEditorStyles } from '../../../../../styles';
-import { ConfigMapExpr } from '../../../../../../../../../types/PackageVariantSet';
+} from '../../../Controls/EditorAccordion';
+import { useEditorStyles } from '../../../styles';
+import { ConfigMapExpr } from '../../../../../../../types/PackageVariantSet';
 
 type OnUpdatedKeyValueObject = (keyValueObject: ConfigMapExpr[]) => void;
 
