@@ -17,9 +17,9 @@
 import React, { useRef, useState } from 'react';
 import { Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import { EditorAccordion } from '../../../Controls';
-import { AccordionState } from '../../../Controls/EditorAccordion';
-import { useEditorStyles } from '../../../styles';
+import { EditorAccordion } from '../../Controls';
+import { AccordionState } from '../../Controls/EditorAccordion';
+import { useEditorStyles } from '../../styles';
 import { RepositoriesEditorAccordion } from './RepositoriesEditorAccordion';
 import { ObjectSelectorEditorAccordion } from './ObjectSelectorEditorAccordion';
 import { RepositorySelectorEditorAccordion } from './RepositorySelectorEditorAccordion';
@@ -28,8 +28,8 @@ import {
   getActiveElements,
   isActiveElement,
   updateList,
-} from '../../../util/deletable';
-import { PackageResource } from '../../../../../../../utils/packageRevisionResources';
+} from '../../util/deletable';
+import { PackageResource } from '../../../../../../utils/packageRevisionResources';
 
 type OnUpdate = (value: any) => void;
 
