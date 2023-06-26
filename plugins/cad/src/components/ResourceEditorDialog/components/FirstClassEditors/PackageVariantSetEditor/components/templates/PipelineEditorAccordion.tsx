@@ -19,28 +19,28 @@ import { Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import useAsync from 'react-use/lib/useAsync';
-import { Function } from '../../../../../../../../../types/Function';
-import { configAsDataApiRef } from '../../../../../../../../../apis';
+import { Function } from '../../../../../../../types/Function';
+import { configAsDataApiRef } from '../../../../../../../apis';
 import {
   KptfileFunction,
   KptfilePipeline,
-} from '../../../../../../../../../types/Kptfile';
+} from '../../../../../../../types/Kptfile';
 import {
   isMutatorFunction,
   isValidatorFunction,
-} from '../../../../../../../../../utils/function';
-import { PackageResource } from '../../../../../../../../../utils/packageRevisionResources';
-import { EditorAccordion } from '../../../../../Controls';
-import { AccordionState } from '../../../../../Controls/EditorAccordion';
-import { KptFunctionEditorAccordion } from '../../../../../KptfileEditor/components/KptFunctionEditorAccordion';
-import { useEditorStyles } from '../../../../../styles';
+} from '../../../../../../../utils/function';
+import { PackageResource } from '../../../../../../../utils/packageRevisionResources';
+import { EditorAccordion } from '../../../Controls';
+import { AccordionState } from '../../../Controls/EditorAccordion';
+import { KptFunctionEditorAccordion } from '../../../KptfileEditor/components/KptFunctionEditorAccordion';
+import { useEditorStyles } from '../../../styles';
 import {
   Deletable,
   getActiveElements,
   isActiveElement,
   undefinedIfEmpty,
   updateList,
-} from '../../../../../util/deletable';
+} from '../../../util/deletable';
 
 type KptfileEditorProps = {
   onUpdatedYaml: OnUpdatedYamlFn;
