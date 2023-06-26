@@ -21,15 +21,15 @@ import { TextField, Button } from '@material-ui/core';
 import {
   AccordionState,
   EditorAccordion,
-} from '../../../Controls/EditorAccordion';
+} from '../../Controls/EditorAccordion';
 import {
   PackageVariantSetObjectSelector,
   PackageVariantSetTempleate,
-} from '../../../../../../../types/PackageVariantSet';
-import { KeyValueEditorAccordion } from '../../../Controls';
-import { PackageResource } from '../../../../../../../utils/packageRevisionResources';
+} from '../../../../../../types/PackageVariantSet';
+import { KeyValueEditorAccordion } from '../../Controls';
+import { PackageResource } from '../../../../../../utils/packageRevisionResources';
 import { TemplateEditorAccordion } from './templates/TemplateEditorAccordion';
-import { useEditorStyles } from '../../../styles';
+import { useEditorStyles } from '../../styles';
 
 type RepositoriesState = {
   objectSelector: PackageVariantSetObjectSelector;
@@ -77,13 +77,7 @@ export const ObjectSelectorEditorAccordion = ({
         variant="outlined"
         value={state.objectSelector.apiVersion}
         onChange={e => {
-          setState(s => ({
-            ...s,
-            objectSelector: {
-              ...s.objectSelector,
-              apiVersion: e.target.value,
-            },
-          }));
+          state.objectSelector.apiVersion = e.target.value;
           valueUpdated();
         }}
         fullWidth
@@ -93,13 +87,7 @@ export const ObjectSelectorEditorAccordion = ({
         variant="outlined"
         value={state.objectSelector.kind}
         onChange={e => {
-          setState(s => ({
-            ...s,
-            objectSelector: {
-              ...s.objectSelector,
-              kind: e.target.value,
-            },
-          }));
+          state.objectSelector.kind = e.target.value;
           valueUpdated();
         }}
         fullWidth
@@ -110,14 +98,7 @@ export const ObjectSelectorEditorAccordion = ({
         title="Match Labels"
         keyValueObject={state.objectSelector.matchLabels || {}}
         onUpdatedKeyValueObject={matchLabels => {
-          viewModel.objectSelector.matchLabels = matchLabels;
-          setState(s => ({
-            ...s,
-            objectSelector: {
-              ...s.objectSelector,
-              matchLabels: matchLabels,
-            },
-          }));
+          state.objectSelector.matchLabels = matchLabels;
           valueUpdated();
         }}
       />
