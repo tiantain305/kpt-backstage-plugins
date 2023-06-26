@@ -18,13 +18,15 @@ import React, { useEffect, useState } from 'react';
 import { cloneDeep } from 'lodash';
 import { PackageResource } from '../../../../../utils/packageRevisionResources';
 import { dumpYaml, loadYaml } from '../../../../../utils/yaml';
-import { ResourceMetadataAccordion } from '../Controls';
+import { EditorAccordion, ResourceMetadataAccordion } from '../Controls';
 import { useEditorStyles } from '../styles';
-import { PackageVariantSetSpecEditor } from './components/PackageVariantSetSpecEditor';
 import {
   PackageVariantSet,
-  PackageVariantSetSpec,
+  PackageVariantSetTargets,
 } from '../../../../../types/PackageVariantSet';
+import { PackageVariantUpstream } from '../../../../../types/PackageVariant';
+import { UpstreamPackageEditorAccordion } from '../PackageVariantEditor/components/container/UpstreamPackageEditorAccordion';
+import { TargetEditorAccordion } from './components/TargetEditorAccordion';
 
 type OnUpdatedYamlFn = (yaml: string) => void;
 
@@ -35,22 +37,20 @@ type ResourceEditorProps = {
 };
 
 type State = {
-  spec: PackageVariantSetSpec;
+  upstream: PackageVariantUpstream;
+  targets: PackageVariantSetTargets[];
 };
 
 const getResourceState = (packageVariantSet: PackageVariantSet): State => {
   packageVariantSet.spec = packageVariantSet.spec || { targets: [] };
-  const packageVariantSetSpec = packageVariantSet.spec;
+  const pvSetSpec = packageVariantSet.spec;
 
-  packageVariantSetSpec.upstream = packageVariantSetSpec.upstream || {};
-  packageVariantSetSpec.targets = packageVariantSetSpec.targets || [];
+  pvSetSpec.upstream = pvSetSpec.upstream || {};
+  pvSetSpec.targets = pvSetSpec.targets || [];
 
-  const specData = {
-    upstream: packageVariantSetSpec.upstream,
-    targets: packageVariantSetSpec.targets,
-  };
   return {
-    spec: specData,
+    upstream: pvSetSpec.upstream,
+    targets: pvSetSpec.targets,
   };
 };
 export const PackageVariantSetEditor = ({
@@ -67,12 +67,13 @@ export const PackageVariantSetEditor = ({
     getResourceState(resourceYaml),
   );
   const [expanded, setExpanded] = useState<string>();
+  const [specExpanded, setSpecExpanded] = useState<string>();
 
   useEffect(() => {
     resourceYaml.metadata = state.metadata;
     const spec = resourceYaml.spec;
-    spec.upstream = cloneDeep(specState.spec.upstream);
-    spec.targets = cloneDeep(specState.spec.targets);
+    spec.upstream = cloneDeep(specState.upstream);
+    spec.targets = cloneDeep(specState.targets);
 
     onUpdatedYaml(dumpYaml(resourceYaml));
   }, [state, specState, resourceYaml, onUpdatedYaml]);
@@ -85,12 +86,25 @@ export const PackageVariantSetEditor = ({
         value={state.metadata}
         onUpdate={metadata => setState(s => ({ ...s, metadata }))}
       />
-      <PackageVariantSetSpecEditor
-        state={[expanded, setExpanded]}
-        value={specState.spec}
-        packageResources={packageResources}
-        onUpdate={spec => setSpecState(s => ({ ...s, spec }))}
-      />
+      <EditorAccordion id="spec" title="Spec" state={[expanded, setExpanded]}>
+        <UpstreamPackageEditorAccordion
+          id="upstream"
+          state={[specExpanded, setSpecExpanded]}
+          title="Upstream"
+          keyValueObject={specState.upstream || {}}
+          onUpdatedKeyValueObject={upstream =>
+            setSpecState(s => ({ ...s, upstream }))
+          }
+        />
+        <TargetEditorAccordion
+          id="Target"
+          title="Target"
+          packageResources={packageResources}
+          targetState={[specExpanded, setSpecExpanded]}
+          keyValueObject={specState.targets || []}
+          onUpdate={targetData => setSpecState(s => ({ ...s, targetData }))}
+        />
+      </EditorAccordion>
     </div>
   );
 };
