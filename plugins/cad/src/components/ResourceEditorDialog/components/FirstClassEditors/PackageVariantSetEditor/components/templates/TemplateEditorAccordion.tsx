@@ -18,19 +18,19 @@ import React, { useState, useRef } from 'react';
 import {
   PackageVariantSetInjectors,
   PackageVariantSetTempleate,
-} from '../../../../../../../../types/PackageVariantSet';
-import { PackageResource } from '../../../../../../../../utils/packageRevisionResources';
-import { Select } from '../../../../../../../Controls';
-import { KeyValueEditorAccordion } from '../../../../Controls';
+} from '../../../../../../../types/PackageVariantSet';
+import { PackageResource } from '../../../../../../../utils/packageRevisionResources';
+import { Select } from '../../../../../../Controls';
+import { KeyValueEditorAccordion } from '../../../Controls';
 import {
   AccordionState,
   EditorAccordion,
-} from '../../../../Controls/EditorAccordion';
-import { InjectorEditorAccordion } from '../../../../PackageVariantEditor/components/container/InjectorEditorAccordion';
-import { DownstreamPackageEditorAccordion } from './container/DownstreamPackageEditorAccordion';
-import { ExprEditorAccordion } from './container/ExprEditorAccordion';
-import { PackageContextEditorAccordion } from './container/PackageContextEditorAccordion';
-import { PipelineEditorAccordion } from './container/PipelineEditorAccordion';
+} from '../../../Controls/EditorAccordion';
+import { InjectorEditorAccordion } from '../../../PackageVariantEditor/components/container/InjectorEditorAccordion';
+import { DownstreamPackageEditorAccordion } from './DownstreamPackageEditorAccordion';
+import { ExprEditorAccordion } from './ExprEditorAccordion';
+import { PackageContextEditorAccordion } from './PackageContextEditorAccordion';
+import { PipelineEditorAccordion } from './PipelineEditorAccordion';
 
 type OnUpdate = (value: PackageVariantSetTempleate) => void;
 
