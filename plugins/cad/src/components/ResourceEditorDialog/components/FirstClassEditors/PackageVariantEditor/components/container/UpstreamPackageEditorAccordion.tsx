@@ -93,6 +93,7 @@ export const UpstreamPackageEditorAccordion = ({
   const refViewModel = useRef<InternalKeyValue>(keyValueObject);
   const viewModel = refViewModel.current;
   const repositoryName = viewModel.repo;
+  const packageName = viewModel.package;
 
   const [repository, setRepository] = useState<Repository>();
   const [packageRevision, setPackageRevision] = useState<PackageRevision>();
@@ -137,10 +138,14 @@ export const UpstreamPackageEditorAccordion = ({
         repositoryPackages.map(mapPackageRevisionToSelectItem),
       );
 
-      setPackageRevision(undefined);
+      const thisPackage = packageName
+        ? getPackageData(allPackageRevisions.current, packageName)
+        : undefined;
+
+      setPackageRevision(thisPackage);
       setPackageRevisionSelectItems(allowPackageRevisions);
     }
-  }, [repository]);
+  }, [repository, packageName]);
 
   const description = `${viewModel.repo ? `${viewModel.repo}/` : ''}${
     viewModel.package ? `${viewModel.package}` : ''
