@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-import React, { useRef, useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
-  PackageVariantInjectors,
-  PackageVariantSpec,
-} from '../../../../../../types/PackageVariant';
-import { PackageResource } from '../../../../../../utils/packageRevisionResources';
-import { Select } from '../../../../../Controls';
+  PackageVariantSetInjectors,
+  PackageVariantSetTempleate,
+} from '../../../../../../../types/PackageVariantSet';
+import { PackageResource } from '../../../../../../../utils/packageRevisionResources';
+import { Select } from '../../../../../../Controls';
+import { KeyValueEditorAccordion } from '../../../Controls';
 import {
   AccordionState,
   EditorAccordion,
-} from '../../Controls/EditorAccordion';
-import { KeyValueEditorAccordion } from '../../Controls/KeyValueEditorAccordion';
-import { DownstreamPackageEditorAccordion } from './container/DownstreamPackageEditorAccordion';
-import { PackageContextEditorAccordion } from './container/PackageContextEditorAccordion';
-import { PipelineEditorAccordion } from './container/PipelineEditorAccordion';
-import { UpstreamPackageEditorAccordion } from './container/UpstreamPackageEditorAccordion';
-import { InjectorEditorAccordion } from './container/InjectorEditorAccordion';
+} from '../../../Controls/EditorAccordion';
+import { InjectorEditorAccordion } from '../../../PackageVariantEditor/components/container/InjectorEditorAccordion';
+import { DownstreamPackageEditorAccordion } from './DownstreamPackageEditorAccordion';
+import { ExprEditorAccordion } from './ExprEditorAccordion';
+import { PackageContextEditorAccordion } from './PackageContextEditorAccordion';
+import { PipelineEditorAccordion } from './PipelineEditorAccordion';
 
-type OnUpdate = (value: PackageVariantSpec) => void;
+type OnUpdate = (value: PackageVariantSetTempleate) => void;
 
 type PackageVariantSpecEditorProps = {
   id: string;
   title: string;
   state: AccordionState;
-  value: PackageVariantSpec;
+  value: PackageVariantSetTempleate;
   onUpdate: OnUpdate;
   packageResources: PackageResource[];
 };
@@ -51,8 +51,7 @@ const adoptFunctionList = [
   { label: 'AdoptExisting', value: 'adoptExisting' },
   { label: 'AdoptNone', value: 'adoptNone' },
 ];
-
-export const PackageVariantSpecEditor = ({
+export const TemplateEditorAccordion = ({
   id,
   title,
   state,
@@ -60,19 +59,23 @@ export const PackageVariantSpecEditor = ({
   onUpdate,
   packageResources,
 }: PackageVariantSpecEditorProps) => {
-  const createInjectorsState = (injectors: any): PackageVariantInjectors => ({
+  const createInjectorsState = (
+    injectors: any,
+  ): PackageVariantSetInjectors => ({
     group: injectors && injectors.group ? injectors.group : '',
     version: injectors && injectors.version ? injectors.version : '',
     kind: injectors && injectors.kind ? injectors.kind : '',
     name: injectors && injectors.name ? injectors.name : '',
+    nameExpr: injectors && injectors.nameExpr ? injectors.nameExpr : '',
   });
 
-  const refViewModel = useRef<PackageVariantSpec>(value);
+  const refViewModel = useRef<PackageVariantSetTempleate>(value);
   const viewModel = refViewModel.current;
   const [specExpanded, setSpecExpanded] = useState<string>();
-  const [injectorEditor, setInjectorEditor] = useState<PackageVariantInjectors>(
-    createInjectorsState(viewModel.injectors),
-  );
+  const [injectorEditor, setInjectorEditor] =
+    useState<PackageVariantSetInjectors>(
+      createInjectorsState(viewModel.injectors),
+    );
   const valueUpdated = (): void => {
     onUpdate(viewModel);
   };
@@ -89,6 +92,16 @@ export const PackageVariantSpecEditor = ({
           valueUpdated();
         }}
       />
+      <ExprEditorAccordion
+        id="labelExpr"
+        state={[specExpanded, setSpecExpanded]}
+        title="Labels Expr"
+        keyValueObject={viewModel.labelExprs || []}
+        onUpdatedKeyValueObject={labels => {
+          viewModel.labelExprs = labels;
+          valueUpdated();
+        }}
+      />
       <KeyValueEditorAccordion
         id="annotations"
         state={[specExpanded, setSpecExpanded]}
@@ -99,13 +112,13 @@ export const PackageVariantSpecEditor = ({
           valueUpdated();
         }}
       />
-      <UpstreamPackageEditorAccordion
-        id="upstream"
+      <ExprEditorAccordion
+        id="annotationExprs"
         state={[specExpanded, setSpecExpanded]}
-        title="Upstream"
-        keyValueObject={viewModel.upstream || {}}
-        onUpdatedKeyValueObject={upstream => {
-          viewModel.upstream = upstream;
+        title="Annotations Expr"
+        keyValueObject={viewModel.annotationExprs || []}
+        onUpdatedKeyValueObject={annotations => {
+          viewModel.annotationExprs = annotations;
           valueUpdated();
         }}
       />
@@ -122,7 +135,7 @@ export const PackageVariantSpecEditor = ({
       <PackageContextEditorAccordion
         id="package-Context"
         state={[specExpanded, setSpecExpanded]}
-        value={viewModel.packageContext}
+        value={viewModel.packageContext || {}}
         onUpdate={packageContext => {
           viewModel.packageContext = packageContext;
           valueUpdated();

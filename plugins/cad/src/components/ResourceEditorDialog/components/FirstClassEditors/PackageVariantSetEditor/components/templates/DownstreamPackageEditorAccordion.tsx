@@ -16,39 +16,34 @@
 
 import { SelectItem } from '@backstage/core-components';
 import { TextField } from '@material-ui/core';
-import React, { Fragment, useRef, useState, useEffect } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
+import React, { Fragment, useRef, useState } from 'react';
 import useAsync from 'react-use/lib/useAsync';
-import { configAsDataApiRef } from '../../../../../../../apis';
-import { PackageVariantUpstream } from '../../../../../../../types/PackageVariant';
 import { Repository } from '../../../../../../../types/Repository';
 import { emptyIfUndefined } from '../../../../../../../utils/string';
 import { Select } from '../../../../../../Controls';
 import { EditorAccordion } from '../../../Controls';
 import { AccordionState } from '../../../Controls/EditorAccordion';
-import { PackageRevision } from '../../../../../../../types/PackageRevision';
-import { sortByLabel } from '../../../../../../../utils/selectItem';
+import { configAsDataApiRef } from '../../../../../../../apis';
+import { PackageVariantSetDownstream } from '../../../../../../../types/PackageVariantSet';
 
-type UpstreamPackageObjectEditorProps = {
+type DownstreamPackageObjectEditorProps = {
   id: string;
   title: string;
   state: AccordionState;
-  keyValueObject: PackageVariantUpstream;
-  onUpdatedKeyValueObject: (arg0: PackageVariantUpstream) => void;
+  keyValueObject: PackageVariantSetDownstream;
+  onUpdatedKeyValueObject: (arg0: PackageVariantSetDownstream) => void;
 };
 
 type InternalKeyValue = {
-  repo: string;
-  package: string;
-  revision?: string;
+  repo?: string;
+  package?: string;
+  repoExpr?: string;
+  packageExpr?: string;
 };
 
 type RepositorySelectItem = SelectItem & {
   repository?: Repository;
-};
-
-type PackageRevisionSelectItem = SelectItem & {
-  packageRevision?: PackageRevision;
 };
 
 const mapRepositoryToSelectItem = (
@@ -59,62 +54,34 @@ const mapRepositoryToSelectItem = (
   repository: repository,
 });
 
-const mapPackageRevisionToSelectItem = (
-  packageRevision: PackageRevision,
-): PackageRevisionSelectItem => ({
-  label: packageRevision.spec.packageName,
-  value: packageRevision.metadata.name,
-  packageRevision: packageRevision,
-});
-
 export const getRepositoryData = (allRepo: any[], name: string): Repository => {
   const repository = allRepo.find(thisRepo => thisRepo.metadata.name === name);
   return repository;
 };
 
-export const getPackageData = (
-  allPackage: any[],
-  name: string,
-): PackageRevision => {
-  const packages = allPackage.find(
-    packageData => packageData.spec.packageName === name,
-  );
-  return packages;
-};
-
-export const UpstreamPackageEditorAccordion = ({
+export const DownstreamPackageEditorAccordion = ({
   id,
   title,
   state,
   keyValueObject,
   onUpdatedKeyValueObject,
-}: UpstreamPackageObjectEditorProps) => {
+}: DownstreamPackageObjectEditorProps) => {
   const api = useApi(configAsDataApiRef);
   const refViewModel = useRef<InternalKeyValue>(keyValueObject);
   const viewModel = refViewModel.current;
   const repositoryName = viewModel.repo;
-  const packageName = viewModel.package;
 
   const [repository, setRepository] = useState<Repository>();
-  const [packageRevision, setPackageRevision] = useState<PackageRevision>();
   const [repositorySelectItems, setRepositorySelectItems] = useState<
     RepositorySelectItem[]
   >([]);
-  const [packageRevisionSelectItems, setPackageRevisionSelectItems] = useState<
-    PackageRevisionSelectItem[]
-  >([]);
-  const allPackageRevisions = useRef<PackageRevision[]>([]);
 
   const keyValueObjectUpdated = (): void => {
     onUpdatedKeyValueObject(viewModel);
   };
 
   useAsync(async (): Promise<void> => {
-    const [{ items: thisAllRepositories }, allPackages] = await Promise.all([
-      api.listRepositories(),
-      api.listPackageRevisions(),
-    ]);
-    allPackageRevisions.current = allPackages;
+    const { items: thisAllRepositories } = await api.listRepositories();
     const thisRepository = repositoryName
       ? getRepositoryData(thisAllRepositories, repositoryName)
       : undefined;
@@ -126,30 +93,9 @@ export const UpstreamPackageEditorAccordion = ({
     setRepositorySelectItems(targetRepositoryItems);
   }, [api]);
 
-  useEffect(() => {
-    if (repository) {
-      const repositoryPackages = allPackageRevisions.current.filter(
-        allPackageRevision =>
-          allPackageRevision.spec.repository === repository.metadata.name &&
-          allPackageRevision.spec.revision === 'main',
-      );
-
-      const allowPackageRevisions = sortByLabel<PackageRevisionSelectItem>(
-        repositoryPackages.map(mapPackageRevisionToSelectItem),
-      );
-
-      const thisPackage = packageName
-        ? getPackageData(allPackageRevisions.current, packageName)
-        : undefined;
-
-      setPackageRevision(thisPackage);
-      setPackageRevisionSelectItems(allowPackageRevisions);
-    }
-  }, [repository, packageName]);
-
   const description = `${viewModel.repo ? `${viewModel.repo}/` : ''}${
     viewModel.package ? `${viewModel.package}` : ''
-  }${viewModel.revision ? `@${viewModel.revision}` : ''}`;
+  }`;
 
   return (
     <EditorAccordion
@@ -160,7 +106,7 @@ export const UpstreamPackageEditorAccordion = ({
     >
       <Fragment>
         <Select
-          label="Upstream Repository"
+          label="Downstream Repository"
           onChange={selectedRepositoryName => {
             setRepository(
               repositorySelectItems.find(
@@ -174,27 +120,37 @@ export const UpstreamPackageEditorAccordion = ({
           items={repositorySelectItems}
         />
 
-        <Select
-          label="Upstream Package"
-          onChange={value => {
-            const selectedPackage = packageRevisionSelectItems.find(
-              r => r.value === value,
-            );
-            setPackageRevision(selectedPackage?.packageRevision);
-            viewModel.package = selectedPackage ? selectedPackage.label : '';
+        <TextField
+          key="package"
+          label="Package"
+          variant="outlined"
+          value={viewModel.package}
+          onChange={e => {
+            viewModel.package = e.target.value;
             keyValueObjectUpdated();
           }}
-          selected={emptyIfUndefined(packageRevision?.metadata.name)}
-          items={packageRevisionSelectItems}
+          fullWidth
         />
 
         <TextField
-          key="revision"
-          label="Revision"
+          key="repoExpr"
+          label="RepoExpr"
           variant="outlined"
-          value={viewModel.revision}
+          value={viewModel.repoExpr}
           onChange={e => {
-            viewModel.revision = e.target.value;
+            viewModel.repoExpr = e.target.value;
+            keyValueObjectUpdated();
+          }}
+          fullWidth
+        />
+
+        <TextField
+          key="packageExpr"
+          label="PackageExpr"
+          variant="outlined"
+          value={viewModel.packageExpr}
+          onChange={e => {
+            viewModel.packageExpr = e.target.value;
             keyValueObjectUpdated();
           }}
           fullWidth
