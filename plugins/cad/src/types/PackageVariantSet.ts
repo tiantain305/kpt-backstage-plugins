@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { KptfilePipeline } from './Kptfile';
 import { KubernetesKeyValueObject } from './KubernetesResource';
 import { PackageVariantUpstream } from './PackageVariant';
 
@@ -31,15 +32,23 @@ export type PackageVariantSetMetadata = {
   annotations?: KubernetesKeyValueObject;
 };
 
+export type ConfigMapExpr = {
+  key?: string;
+  value?: string;
+  keyExpr?: string;
+  valueExpr?: string;
+};
+
 export type PackageVariantSetSpec = {
   upstream: PackageVariantUpstream;
   targets: PackageVariantSetTargets[];
 };
 
 export type PackageVariantSetTargets = {
-  repositories: PackageVariantSetRepositories[];
-  repositorySelector: PackageVariantSetRepositorySelector;
-  objectSelector: string;
+  repositories?: PackageVariantSetRepositories[];
+  repositorySelector?: PackageVariantSetRepositorySelector;
+  objectSelector?: PackageVariantSetObjectSelector;
+  template?: PackageVariantSetTempleate;
 };
 
 export type PackageVariantSetRepositories = {
@@ -49,4 +58,46 @@ export type PackageVariantSetRepositories = {
 
 export type PackageVariantSetRepositorySelector = {
   matchLabels: KubernetesKeyValueObject;
+};
+
+export type PackageVariantSetObjectSelector = {
+  name?: string;
+  matchLabels: KubernetesKeyValueObject;
+  apiVersion: string;
+  kind: string;
+};
+
+export type PackageVariantSetTempleate = {
+  downstream?: PackageVariantSetDownstream;
+  adoptionPolicy?: string;
+  deletionPolicy?: string;
+  labels?: KubernetesKeyValueObject;
+  labelExprs?: ConfigMapExpr[];
+  annotations?: KubernetesKeyValueObject;
+  annotationExprs?: ConfigMapExpr[];
+  packageContext?: PackageVariantSetPackageContext;
+  pipeline?: KptfilePipeline;
+  injectors?: PackageVariantSetInjectors;
+};
+
+export type PackageVariantSetDownstream = {
+  repo?: string;
+  package?: string;
+  repoExpr?: string;
+  packageExpr?: string;
+};
+
+export type PackageVariantSetPackageContext = {
+  data?: KubernetesKeyValueObject;
+  removeKeys?: string[];
+  dataExprs?: ConfigMapExpr[];
+  removeKeyExprs?: string[];
+};
+
+export type PackageVariantSetInjectors = {
+  group?: string;
+  version?: string;
+  kind?: string;
+  name: string;
+  nameExpr?: string;
 };
