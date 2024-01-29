@@ -32,6 +32,7 @@ presubmits:
               yarn lint:all
               yarn tsc:full
               yarn prettier:check
+
   - name: presubmit-kbp-license-header-check
     decorate: true
     always_run: true
@@ -43,6 +44,7 @@ presubmits:
         - "-c"
         - |
           /usr/local/bin/checklicense.sh > ${ARTIFACTS}/license_headers_results.txt
+
   - name: presubmit-kbp-scancode-toolkit
     decorate: true
     always_run: true
@@ -59,6 +61,7 @@ presubmits:
           requests:
             cpu: 2
             memory: 1Gi
+
   - name: presubmit-kbp-fossology
     decorate: true
     always_run: true
@@ -71,4 +74,40 @@ presubmits:
         - "-c"
         - |
           /bin/fossologyscanner --report SPDX_JSON repo nomos ojo copyright keyword
-          cp -R results ${ARTIFACTS}/    
+          cp -R results ${ARTIFACTS}/
+
+  - name: build-push-pre-image-kbp
+    cluster: default
+    always_run: true
+    branches:
+    - "main"
+    annotations:
+      description: Build and Push Presubmit Image to Hub
+    decorate: true
+    decoration_config:
+      censor_secrets: true
+    max_concurrency: 0
+    spec:
+      containers:
+      - name: kaniko
+        image: gcr.io/kaniko-project/executor:debug
+        command:
+        - "/bin/sh"
+        - "-c"
+        - |
+          executor --context=${PWD} \
+            --dockerfile=Dockerfile --destination=nephio/pre-kpt-backstage-plugins:${BUILD_ID}
+        volumeMounts:
+          - name: kaniko-secret
+            mountPath: /kaniko/.docker/
+        resources:
+          requests:
+            cpu: 2
+            memory: 1Gi
+      volumes:
+        - name: kaniko-secret
+          secret:
+            secretName: regcred
+            items:
+              - key: .dockerconfigjson
+                path: config.json
